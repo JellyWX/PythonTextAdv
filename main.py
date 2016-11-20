@@ -28,22 +28,22 @@ class Container(object):
   def __init__(self, r, n):
     self.room = r
     self.name = n
+    self.subcontainers = []
     print('N:created container ' + self.name + 'with no contents at ' + self.room)
 
-
-class SubContainer(Container):
+class Item(object):
   name = ''
-  contents = []
+  carriable = True
   container = ''
 
   def __init__(self, c, n):
-    self.name = n
     self.container = c
-    print('N:spawned a subcontainer inside container ' + self.container.name)
+    self.name = n
+    self.carriable = True
+    print('N:created a new ' + self.name + ' in ' + self.container)
 
-  def eval(self):
-    print('N:subcontainer ' + self.name + ', of ' + self.container + ', contains ' + self.contents)
-
+  def hide(self):
+    self.container = ''
 
 class PlayerObj(object):
   health = 0
@@ -55,6 +55,10 @@ class PlayerObj(object):
     self.health = h
     self.inventory = []
     print('N:new player object spawned in at ' + self.room.name)
+
+  def addItem(self, i):
+    self.inventory.append(i)
+    i.hide()
 
   def doAction(self, action):
     action = action.strip(' ')
@@ -74,7 +78,10 @@ class PlayerObj(object):
           print('Room not available for travel. Use `> rooms` to find available rooms.')
       except:
         print('Room name entered not found. USAGE: `> room <name>` (Must be a connected room. Find connected rooms using `> rooms`)')
-
+    elif action.split(' ')[0] == 'collect':
+      try:
+        if eval(action.split(' ')[1]).carriable == True:
+          self.inventory.addItem(eval(action.split(' ')[1]))
     elif action == 'exit':
       exit()
 
