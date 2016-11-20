@@ -5,11 +5,13 @@ class Room():
   name = ''
   exits = ''
   contents = ''
+  locked = False
 
   def __init__(self, n):
     self.name = n
     self.exits = []
     self.contents = ''
+    self.locked = False
     print('N:spawned in a room. name:' + self.name + ', exits:' + str(self.exits))
 
   def eval(self):
@@ -46,20 +48,32 @@ class SubContainer(Container):
 class PlayerObj(object):
   health = 0
   room = ''
-  inventory = []
+  inventory = ''
 
   def __init__(self, r, h):
     self.room = r
     self.health = h
+    self.inventory = []
     print('N:new player object spawned in at ' + self.room.name)
 
   def doAction(self, action):
+    action = action.strip(' ')
     if action == 'rooms':
       self.room.eval()
-    elif action.split(' ')[0] == 'room':
-      self.room = eval(action.split(' ')[1])
-      print(self.room.name)
 
+    elif action.split(' ')[0] == 'room':
+      try:
+        if eval(action.split(' ')[1]).name in self.room.exits:
+          if eval(action.split(' ')[1]).locked == True:
+            print('The room is locked')
+          else:
+            print(self.room.name + ' >> ' + eval(action.split(' ')[1]).name)
+            self.room = eval(action.split(' ')[1])
+
+        else:
+          print('Room not available for travel. Use `> rooms` to find available rooms.')
+      except:
+        print('Room name entered not found. USAGE: `> room <name>` (Must be a connected room. Find connected rooms using `> rooms`)')
 
     elif action == 'exit':
       exit()
@@ -67,11 +81,23 @@ class PlayerObj(object):
 bedroom = Room('bedroom')
 landing = Room('landing')
 stairs = Room('stairs')
+hall = Room('hall')
+kitchen = Room('kitchen')
 
 bedroom.addExit('landing')
+
 landing.addExit('bedroom')
 landing.addExit('stairs')
+
 stairs.addExit('landing')
+stairs.addExit('hall')
+
+hall.addExit('kitchen')
+hall.addExit('stairs')
+
+kitchen.addExit('hall')
+
+kitchen.locked = True
 
 player = PlayerObj(bedroom, 100)
 
