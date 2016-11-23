@@ -51,12 +51,13 @@ class Item(object):
   name = ''
   carriable = True
   container = ''
-
+  misc_attr = ''
 
   def __init__(self, c, n):
     self.container = c
     self.name = n
     self.carriable = True
+    self.misc_attr = []
     print('N:created a new ' + self.name + ' in ' + self.container.name)
     self.container.addContent(self)
 
@@ -78,6 +79,13 @@ class PlayerObj(object):
   def addItem(self, i):
     self.inventory.append(i.name)
     i.collect(self)
+
+  def unlock(self, r):
+
+    if r.locked == True:
+      for Item in self.inventory:
+        if ('canUnlock ' + r.name) in eval(Item).misc_attr:
+          r.locked = False
 
   def doAction(self, action):
     action = action.strip(' ')
@@ -126,6 +134,8 @@ class PlayerObj(object):
     elif action.split(' ')[0] == 'inventory':
       print(self.inventory)
 
+    elif action.split(' ')[0] == 'unlock':
+      self.unlock(eval(action.split(' ')[1]))
     elif action == 'exit':
       exit()
 
@@ -136,7 +146,9 @@ hall = Room('hall')
 kitchen = Room('kitchen')
 
 shelf = Container(hall, 'shelf')
+
 key = Item(shelf, 'key')
+key.misc_attr.append('canUnlock kitchen')
 
 bedroom.addExit('landing')
 
