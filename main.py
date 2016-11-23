@@ -1,30 +1,36 @@
-import random
-from os import listdir
-
 class Room():
   name = ''
   exits = ''
   contents = ''
   locked = False
+  room = ''
 
   def __init__(self, n):
     self.name = n
     self.exits = []
     self.contents = []
     self.locked = False
+    self.room = self
     print('N:spawned in a room. name:' + self.name + ', exits:' + str(self.exits))
 
   def eval(self):
-    print('N:room has ' + str(self.exits) + ' exits and is called ' + self.name)
+    print('Room ' + self.name + ' leads to:')
+    for x in self.exits:
+      print(' - ' + x.name + ' ')
 
   def addExit(self, e):
     self.exits.append(e)
 
-  def addContainer(self, c):
-    self.contents.append(c.name)
+  def addContent(self, c):
+    self.contents.append(c)
+
+  def removeContent(self, c):
+    self.contents.remove(c)
 
   def search(self):
-    print('N:rooms contents are ' + str(self.contents))
+    print('Room contents:')
+    for x in self.contents:
+      print(' - ' + x.name + ' ')
 
 class Container(object):
   room = ''
@@ -36,16 +42,21 @@ class Container(object):
     self.name = n
     self.contents = []
     print('N:created container ' + self.name + ' with no contents at ' + self.room.name)
-    self.room.addContainer(self)
+    self.room.addContent(self)
 
   def addContent(self, c):
-    self.contents.append(c.name)
+    self.contents.append(c)
 
   def removeContent(self, c):
-    self.contents.remove(c.name)
+    self.contents.remove(c)
 
-  def search(self):
-    print('N:containers contents are ' + str(self.contents))
+  def search(self, client):
+    if client.room == self.room:
+      print('Container contents:')
+      for x in self.contents:
+        print(' - ' + x.name + ' ')
+    else:
+      print('Container not available')
 
 class Item(object):
   name = ''
@@ -77,29 +88,29 @@ class PlayerObj(object):
     print('N:new player object spawned in at ' + self.room.name)
 
   def addItem(self, i):
-    self.inventory.append(i.name)
+    self.inventory.append(i)
     i.collect(self)
 
   def unlock(self, r):
-
     if r.locked == True:
-      for Item in self.inventory:
-        if ('canUnlock ' + r.name) in eval(Item).misc_attr:
+      for i in self.inventory:
+        if ('canUnlock ' + r.name) in i.misc_attr:
           r.locked = False
+          i.name += ' (' + r.name + ')'
 
-  def doAction(self, action):
-    action = action.strip(' ')
-    if action == 'rooms':
+  def doAction(self, a):
+    a = a.strip(' ')
+    if a == 'rooms':
       self.room.eval()
 
-    elif action.split(' ')[0] == 'room':
+    elif a.split(' ')[0] == 'room':
       try:
-        if eval(action.split(' ')[1]).name in self.room.exits:
-          if eval(action.split(' ')[1]).locked == True:
+        if eval(a.split(' ')[1]) in self.room.exits:
+          if eval(a.split(' ')[1]).locked == True:
             print('The room is locked')
           else:
-            print(self.room.name + ' >> ' + eval(action.split(' ')[1]).name)
-            self.room = eval(action.split(' ')[1])
+            print(self.room.name + ' >> ' + a.split(' ')[1])
+            self.room = eval(a.split(' ')[1])
 
         else:
           print('Room not available for travel. Use `> rooms` to find available rooms.')
@@ -107,36 +118,38 @@ class PlayerObj(object):
       except:
         print('Room name entered not found. USAGE: `> room <name>` (Must be a connected room. Find connected rooms using `> rooms`)')
 
-    elif action.split(' ')[0] == 'collect':
+    elif a.split(' ')[0] == 'collect':
       try:
-        if eval(action.split(' ')[1]).name in self.room.contents:
-          if eval(action.split(' ')[2]).name in eval(action.split(' ')[1]).contents:
-            if eval(action.split(' ')[2]).carriable == True:
-              self.addItem(eval(action.split(' ')[2]))
-            else:
-              print('Item cant be carried')
-          else:
-            print('Item couldnt be found')
+        if eval(a.split(' ')[1]).room == self.room:
+          for x in eval(a.split(' ')[1]).contents:
+            if x.name == a.split(' ')[2]:
+              if x.carriable == True:
+                self.addItem(x)
+                print('Collected item')
+              else:
+                print('Item cant be carried')
         else:
-          print('Couldnt find container')
+          print('Container cant be found')
       except:
-        print('Failed to collect said item')
-
-    elif action.split(' ')[0] == 'scan':
+        print('Couldnt find item specified')
+    elif a.split(' ')[0] == 'scan':
       self.room.search()
 
-    elif action.split(' ')[0] == 'search':
+    elif a.split(' ')[0] == 'search':
       try:
-        eval(action.split(' ')[1]).search()
+        eval(a.split(' ')[1]).search(self)
       except:
         print('Container not found')
 
-    elif action.split(' ')[0] == 'inventory':
-      print(self.inventory)
+    elif a.split(' ')[0] == 'inventory':
+      print('Inventory:')
+      for x in self.inventory:
+        print(' - ' + x.name + ' ')
 
-    elif action.split(' ')[0] == 'unlock':
-      self.unlock(eval(action.split(' ')[1]))
-    elif action == 'exit':
+    elif a.split(' ')[0] == 'unlock':
+      self.unlock(eval(a.split(' ')[1]))
+
+    elif a == 'exit':
       exit()
 
 bedroom = Room('bedroom')
@@ -144,27 +157,40 @@ landing = Room('landing')
 stairs = Room('stairs')
 hall = Room('hall')
 kitchen = Room('kitchen')
+conservatory = Room('conservatory')
 
 shelf = Container(hall, 'shelf')
+bed = Container(bedroom, 'bed')
+table = Container(kitchen, 'table')
+cupboards = Container(kitchen, 'cupboards')
 
-key = Item(shelf, 'key')
-key.misc_attr.append('canUnlock kitchen')
+key_kitchen = Item(shelf, 'key')
+key_kitchen.misc_attr.append('canUnlock kitchen')
 
-bedroom.addExit('landing')
+key_conservatory = Item(table, 'key')
+key_conservatory.misc_attr.append('canUnlock conservatory')
 
-landing.addExit('bedroom')
-landing.addExit('stairs')
+knife = Item(kitchen, 'knife')
 
-stairs.addExit('landing')
-stairs.addExit('hall')
+bedroom.addExit(landing)
 
-hall.addExit('kitchen')
-hall.addExit('stairs')
+landing.addExit(bedroom)
+landing.addExit(stairs)
 
-kitchen.addExit('hall')
+stairs.addExit(landing)
+stairs.addExit(hall)
+
+hall.addExit(kitchen)
+hall.addExit(stairs)
+
+kitchen.addExit(hall)
+kitchen.addExit(conservatory)
 kitchen.locked = True
 
-player = PlayerObj(hall, 100)
+conservatory.addExit(kitchen)
+conservatory.locked = True
+
+player = PlayerObj(bedroom, 100)
 
 playing = True
 
