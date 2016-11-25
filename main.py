@@ -68,7 +68,7 @@ class Safe(Container):
     print('N:created container ' + self.name + ' with no contents at ' + self.room.name)
     self.room.addContent(self)
 
-  def search(self, client):
+  def unlock(self, client):
     if client.room == self.room:
       if self.locked == True:
         for x in client.contents:
@@ -79,18 +79,22 @@ class Safe(Container):
         self.usr_pass = 000000
         if isinstance(self.corr_pass, int):
           while(self.locked == True):
-            #try:
-            self.usr_pass = int(input('Enter a 6 digit passcode. Enter `exit` to escape > '))
-            if self.usr_pass == self.corr_pass:
-              self.locked = False
-              print('Safe unlocked')
+            try:
+              self.usr_pass = int(input('Enter a 6 digit passcode. Enter `exit` to escape > '))
+              if self.usr_pass == self.corr_pass:
+                self.locked = False
+                print('Safe unlocked')
+                break
+              else:
+                print('Incorrect passcode')
+            except:
               break
-            else:
-              print('Incorrect passcode')
-            #except:
-            #  break
         elif self.locked == True:
           print('You need a key to open this safe')
+  def search(self, client):
+    if client.room == self.room:
+      if self.locked == True:
+        print('Safe is locked')
       else:
         print('Safe contents:')
         for x in self.contents:
@@ -126,7 +130,7 @@ class PlayerObj(Container):
             print(self.room.name + ' >> ' + a.split(' ')[1])
             self.room = x
 
-    elif a.split(' ')[0] == 'collect':
+    elif a.split(' ')[0] in ['collect', 'take']:
       if len(a.split(' ')) == 3:
         for y in self.room.contents:
           try:
@@ -139,18 +143,35 @@ class PlayerObj(Container):
               if x.name == a.split(' ')[2]:
                 if x.carriable == True:
                   x.move(self)
+                  i = 1
+                  j = x.name
+                  for z in self.contents:
+                    if z != x:
+                      if z.name == x.name:
+                        while z.name == x.name:
+                          x.name = j + ' (' + str(i) + ')'
+                          i += 1
                   print('Collected item')
                 else:
                   print('Item cant be carried')
-      else:
+      elif len(a.split(' ')) == 2:
         for x in self.room.contents:
           if x.name == a.split(' ')[1]:
             if x.carriable == True:
               x.move(self)
+              i = 1
+              j = x.name
+              for z in self.contents:
+                if z != x:
+                  if z.name == x.name:
+                    while z.name == x.name:
+                      x.name = j + ' (' + str(i) + ')'
+                      i += 1
               print('Collected item')
             else:
               print('Item cant be carried')
-
+      else:
+        print('Failed to evaluate collect')
 
     elif a.split(' ')[0] == 'drop':
       if len(a.split(' ')) == 3:
@@ -168,25 +189,34 @@ class PlayerObj(Container):
       self.room.search()
 
     elif a.split(' ')[0] == 'search':
-      #try:
+      try:
         for x in self.room.contents:
           if x.name == a.split(' ')[1]:
             x.search(self)
-      #except:
-      #  print('Container not found')
+      except:
+        print('Container not found')
 
-    elif a.split(' ')[0] == 'inventory':
+    elif a.split(' ')[0] in 'inventory':
       print('contents:')
       for x in self.contents:
         print(' - ' + x.name + ' ')
 
     elif a.split(' ')[0] == 'unlock':
+      done = False
       for x in self.room.exits:
         if x.name == a.split(' ')[1]:
           self.unlock(x)
+          done = True
+          print('yes')
+      if done == False:
+        for x in self.room.contents:
+          if x.name == a.split(' ')[1]:
+            x.unlock(self)
+
 
     elif a == 'exit':
       exit()
+
 
     else:
       print('Not recognised command. Try again')
@@ -202,6 +232,7 @@ shelf = Container(hall, 'shelf')
 bed = Container(bedroom, 'bed')
 table = Container(kitchen, 'table')
 cupboards = Container(kitchen, 'cupboards')
+body = Container(kitchen, 'corpse')
 safe_kitchen = Safe(kitchen, 'safe', 123456)
 safe_bedroom = Safe(bedroom, 'safe', 'x')
 
@@ -215,6 +246,7 @@ key_conservatory = Item(table, 'key')
 key_conservatory.misc_attr.append('canUnlock conservatory')
 
 knife = Item(kitchen, 'knife')
+kinfe_2 = Item(body, 'knife')
 
 bedroom.addExit(landing)
 
@@ -234,7 +266,7 @@ kitchen.locked = True
 conservatory.addExit(kitchen)
 conservatory.locked = True
 
-player = PlayerObj(bedroom, 100)
+player = PlayerObj(kitchen, 100)
 
 playing = True
 
