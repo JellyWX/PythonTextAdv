@@ -3,6 +3,7 @@ class Container(object):
     self.room = r
     self.name = n
     self.contents = []
+    self.locked = False
     print('N:created container ' + self.name + ' with no contents at ' + self.room.name)
     self.room.addContent(self)
 
@@ -57,6 +58,46 @@ class Item(object):
     self.container = collector
     collector.contents.append(self)
 
+class Safe(Container):
+  def __init__(self, r, n, p):
+    self.room = r
+    self.name = n
+    self.contents = []
+    self.locked = True
+    self.corr_pass = p
+    print('N:created container ' + self.name + ' with no contents at ' + self.room.name)
+    self.room.addContent(self)
+
+  def search(self, client):
+    if client.room == self.room:
+      if self.locked == True:
+        for x in client.contents:
+          if 'canUnlock ' + self.name in x.misc_attr:
+            print('Safe unlocked with key')
+            x.name += ' (' + self.name + ')'
+            self.locked = False
+        self.usr_pass = 000000
+        if isinstance(self.corr_pass, int):
+          while(self.locked == True):
+            #try:
+            self.usr_pass = int(input('Enter a 6 digit passcode. Enter `exit` to escape > '))
+            if self.usr_pass == self.corr_pass:
+              self.locked = False
+              print('Safe unlocked')
+              break
+            else:
+              print('Incorrect passcode')
+            #except:
+            #  break
+        elif self.locked == True:
+          print('You need a key to open this safe')
+      else:
+        print('Safe contents:')
+        for x in self.contents:
+          print(' - ' + x.name + ' ')
+    else:
+      print('Container not available')
+
 class PlayerObj(Container):
   def __init__(self, r, h):
     self.room = r
@@ -77,23 +118,22 @@ class PlayerObj(Container):
       self.room.eval()
 
     elif a.split(' ')[0] == 'room':
-      try:
-        if eval(a.split(' ')[1]) in self.room.exits:
-          if eval(a.split(' ')[1]).locked == True:
+      for x in self.room.exits:
+        if x.name == a.split(' ')[1]:
+          if x.locked == True:
             print('The room is locked. Unlock rooms using `> unlock <room>`')
           else:
             print(self.room.name + ' >> ' + a.split(' ')[1])
-            self.room = eval(a.split(' ')[1])
-
-        else:
-          print('Room not available for travel. Use `> rooms` to find available rooms.')
-
-      except:
-        print('Room name entered not found. USAGE: `> room <name>` (Must be a connected room. Find connected rooms using `> rooms`)')
+            self.room = x
 
     elif a.split(' ')[0] == 'collect':
       if len(a.split(' ')) == 3:
         for y in self.room.contents:
+          try:
+            if y.locked == True:
+              continue
+          except:
+            pass
           if y.name == a.split(' ')[1]:
             for x in y.contents:
               if x.name == a.split(' ')[2]:
@@ -128,12 +168,12 @@ class PlayerObj(Container):
       self.room.search()
 
     elif a.split(' ')[0] == 'search':
-      try:
+      #try:
         for x in self.room.contents:
           if x.name == a.split(' ')[1]:
             x.search(self)
-      except:
-        print('Container not found')
+      #except:
+      #  print('Container not found')
 
     elif a.split(' ')[0] == 'inventory':
       print('contents:')
@@ -162,6 +202,11 @@ shelf = Container(hall, 'shelf')
 bed = Container(bedroom, 'bed')
 table = Container(kitchen, 'table')
 cupboards = Container(kitchen, 'cupboards')
+safe_kitchen = Safe(kitchen, 'safe', 123456)
+safe_bedroom = Safe(bedroom, 'safe', 'x')
+
+key_safe_bedroom = Item(safe_kitchen, 'key')
+key_safe_bedroom.misc_attr.append('canUnlock safe_bedroom')
 
 key_kitchen = Item(shelf, 'key')
 key_kitchen.misc_attr.append('canUnlock kitchen')
