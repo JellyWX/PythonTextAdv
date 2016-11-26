@@ -4,6 +4,8 @@ class Container(object):
     self.name = n
     self.contents = []
     self.locked = False
+    self.movable = False
+    self.desc = 'No description available'
     print('N:created container ' + self.name + ' with no contents at ' + self.room.name)
     self.room.addContent(self)
 
@@ -29,6 +31,7 @@ class Room(Container):
     self.contents = []
     self.locked = False
     self.room = self
+    self.barricade = []
     print('N:spawned in a room. name:' + self.name + ', exits:' + str(self.exits))
 
   def eval(self):
@@ -50,6 +53,7 @@ class Item(object):
     self.name = n
     self.carriable = True
     self.misc_attr = []
+    self.desc = 'No description available'
     print('N:created a new ' + self.name + ' in ' + self.container.name)
     self.container.addContent(self)
 
@@ -126,6 +130,8 @@ class PlayerObj(Container):
         if x.name == a.split(' ')[1]:
           if x.locked == True:
             print('The room is locked. Unlock rooms using `> unlock <room>`')
+          elif len(x.barricade) > 0:
+            print('Room is barricaded. Remove barricades using `> unblock <room>`')
           else:
             print(self.room.name + ' >> ' + a.split(' ')[1])
             self.room = x
@@ -213,10 +219,20 @@ class PlayerObj(Container):
           if x.name == a.split(' ')[1]:
             x.unlock(self)
 
+    elif a.split(' ')[0] in ['examine', 'look']:
+      done = False
+      for x in self.contents:
+        if x.name == a.split(' ')[1]:
+          print(x.desc)
+          done = True
+      if done == False:
+        for x in self.room.contents:
+          if x.name == a.split(' ')[1]:
+            print(x.desc)
+
 
     elif a == 'exit':
       exit()
-
 
     else:
       print('Not recognised command. Try again')
@@ -233,8 +249,18 @@ bed = Container(bedroom, 'bed')
 table = Container(kitchen, 'table')
 cupboards = Container(kitchen, 'cupboards')
 body = Container(kitchen, 'corpse')
-safe_kitchen = Safe(kitchen, 'safe', 123456)
+body_2 = Container(conservatory, 'corpse')
+safe_kitchen = Safe(kitchen, 'safe', 256342)
 safe_bedroom = Safe(bedroom, 'safe', 'x')
+
+shelf.desc = 'A set of white, wooden shelves.'
+bed.desc = 'A bed with a mutilated mattress. All the springs and most of the stuffing has been stripped away.'
+table.desc = 'An intact 4-legged dining table.'
+cupboards.desc = 'Cupboards surround the room, although most have no doors and have had the hinges removed.'
+body.desc = 'A corpse leaves an acrid scent in the room. Scars cover his body and dried blood covers his neck from a large open wound caused by a knife.'
+body_2.desc = 'A corpse, mostly intact. 2 bullet holes fill his chest and head.'
+safe_kitchen.desc = 'A metal safe with an electric code lock.'
+safe_bedroom.desc = 'A metal safe with a key hole.'
 
 key_safe_bedroom = Item(safe_kitchen, 'key')
 key_safe_bedroom.misc_attr.append('canUnlock safe_bedroom')
@@ -246,7 +272,16 @@ key_conservatory = Item(table, 'key')
 key_conservatory.misc_attr.append('canUnlock conservatory')
 
 knife = Item(kitchen, 'knife')
-kinfe_2 = Item(body, 'knife')
+knife_2 = Item(body, 'knife')
+
+note = Item(body, 'note')
+
+key_safe_bedroom.desc = 'A small key, like a window key.'
+key_kitchen.desc = 'A large bolt-lock key.'
+key_conservatory.desc = 'A small key but too small to be for an external door.'
+knife.desc = 'A sharp blade covered in blood.'
+knife_2.desc = 'A sharp blade covered in blood.'
+note.desc = 'A crumpled piece of paper with `256342` written on it.'
 
 bedroom.addExit(landing)
 
