@@ -50,6 +50,9 @@ class Room(Container):
     for x in self.contents:
       print(' - ' + x.name + ' ')
 
+  def blockade(self, bar):
+    self.barricade.append(bar)
+
 class Item(object):
   def __init__(self, c, n):
     self.container = c
@@ -118,11 +121,16 @@ class PlayerObj(Container):
     print('N:new player object spawned in at ' + self.room.name)
 
   def unlock(self, r):
-    if r.locked == True:
+    if self.room in r.locked:
       for i in self.contents:
         if ('canUnlock ' + r.name) in i.misc_attr:
-          r.locked = False
+          r.locked.remove(self.room)
           i.name += ' (' + r.name + ')'
+    elif r in self.room.locked:
+      for i in self.contents:
+        if ('canUnlock ' + self.room.name) in i.misc_attr:
+          r.locked.remove(r)
+          i.name += ' (' + self.room.name + ')'
 
   def doAction(self, a):
     a = a.strip(' ')
@@ -211,8 +219,8 @@ class PlayerObj(Container):
       except:
         print('Container not found')
 
-    elif a.split(' ')[0] in 'inventory':
-      print('contents:')
+    elif a.split(' ')[0] in ['inventory', 'inv', 'i']:
+      print('Inventory:')
       for x in self.contents:
         print(' - ' + x.name + ' ')
 
@@ -222,7 +230,6 @@ class PlayerObj(Container):
         if x.name == a.split(' ')[1]:
           self.unlock(x)
           done = True
-          print('yes')
       if done == False:
         for x in self.room.contents:
           if x.name == a.split(' ')[1]:
@@ -239,6 +246,17 @@ class PlayerObj(Container):
           if x.name == a.split(' ')[1]:
             print(x.desc)
 
+    elif a.split(' ')[0] in ['bar', 'barricade', 'block']:
+      for x in self.room.contents:
+        if type(x) is Container:
+          if x.name == a.split(' ')[1]:
+            if x.movable == True:
+              for y in self.room.exits:
+                if y.name == a.split(' ')[2]:
+                  y.blockade(x)
+
+    #elif a.split(' ')[0] in ['unbar', 'unblock', 'unbarricade']:
+      #for x in self.room.exits
 
     elif a == 'exit':
       self.playing = False
@@ -262,6 +280,11 @@ body          = Container(kitchen, 'corpse')
 body_2        = Container(conservatory, 'corpse')
 safe_kitchen  = Safe(kitchen, 'safe', 256342)
 safe_bedroom  = Safe(bedroom, 'safe', 'x')
+
+shelf.movable         = True
+table.movable         = True
+safe_kitchen.movable  = True
+safe_bedroom.movable  = True
 
 shelf.desc         = 'A set of white, wooden shelves.'
 bed.desc           = 'A bed with a mutilated mattress. All the springs and most of the stuffing has been stripped away.'
@@ -307,7 +330,7 @@ lounge.addExit(kitchen)
 kitchen.addExit(conservatory)
 kitchen.locked = [hall]
 
-conservatory.locked = [True]
+conservatory.locked = [kitchen]
 
 player = PlayerObj(kitchen, 100)
 
