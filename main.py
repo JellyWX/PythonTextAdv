@@ -129,18 +129,18 @@ class PlayerObj(Container):
     elif r in self.room.locked:
       for i in self.contents:
         if ('canUnlock ' + self.room.name) in i.misc_attr:
-          r.locked.remove(r)
+          self.room.locked.remove(r)
           i.name += ' (' + self.room.name + ')'
 
   def doAction(self, a):
     a = a.strip(' ')
     a = a.lower()
-    if a.split(' ')[0] == 'rooms':
+    if a.split(' > ')[0] == 'rooms':
       self.room.eval()
 
-    elif a.split(' ')[0] == 'room':
+    elif a.split(' > ')[0] == 'room':
       for x in self.room.exits:
-        if x.name == a.split(' ')[1]:
+        if x.name == a.split(' > ')[1]:
           if self.room in x.locked:
             print('The connection is locked. Unlock rooms using `> unlock <room>`')
           elif x in self.room.locked:
@@ -150,20 +150,20 @@ class PlayerObj(Container):
           elif len(x.barricade) > 0:
             print('Room is barricaded. Remove barricades using `> unblock <room>`')
           else:
-            print(self.room.name + ' >> ' + a.split(' ')[1])
+            print(self.room.name + ' >> ' + a.split(' > ')[1])
             self.room = x
 
-    elif a.split(' ')[0] in ['collect', 'take']:
-      if len(a.split(' ')) == 3:
+    elif a.split(' > ')[0] in ['collect', 'take']:
+      if len(a.split(' > ')) == 3:
         for y in self.room.contents:
           try:
             if y.locked == True:
               continue
           except:
             pass
-          if y.name == a.split(' ')[1]:
+          if y.name == a.split(' > ')[1]:
             for x in y.contents:
-              if x.name == a.split(' ')[2]:
+              if x.name == a.split(' > ')[2]:
                 if x.carriable == True:
                   x.move(self)
                   i = 1
@@ -177,9 +177,9 @@ class PlayerObj(Container):
                   print('Collected item')
                 else:
                   print('Item cant be carried')
-      elif len(a.split(' ')) == 2:
+      elif len(a.split(' > ')) == 2:
         for x in self.room.contents:
-          if x.name == a.split(' ')[1]:
+          if x.name == a.split(' > ')[1]:
             if x.carriable == True:
               x.move(self)
               i = 1
@@ -196,68 +196,68 @@ class PlayerObj(Container):
       else:
         print('Failed to evaluate collect')
 
-    elif a.split(' ')[0] == 'drop':
-      if len(a.split(' ')) == 3:
+    elif a.split(' > ')[0] == 'drop':
+      if len(a.split(' > ')) == 3:
         for y in self.room.contents:
-          if y.name == a.split(' ')[2]:
+          if y.name == a.split(' > ')[2]:
             for x in self.contents:
-              if x.name == a.split(' ')[1]:
+              if x.name == a.split(' > ')[1]:
                 x.move(y)
       else:
         for x in self.contents:
-          if x.name == a.split(' ')[1]:
+          if x.name == a.split(' > ')[1]:
             x.move(self.room)
 
-    elif a.split(' ')[0] == 'scan':
+    elif a.split(' > ')[0] == 'scan':
       self.room.search()
 
-    elif a.split(' ')[0] == 'search':
+    elif a.split(' > ')[0] == 'search':
       try:
         for x in self.room.contents:
-          if x.name == a.split(' ')[1]:
+          if x.name == a.split(' > ')[1]:
             x.search(self)
       except:
         print('Container not found')
 
-    elif a.split(' ')[0] in ['inventory', 'inv', 'i']:
+    elif a.split(' > ')[0] in ['inventory', 'inv', 'i']:
       print('Inventory:')
       for x in self.contents:
         print(' - ' + x.name + ' ')
 
-    elif a.split(' ')[0] == 'unlock':
+    elif a.split(' > ')[0] == 'unlock':
       done = False
       for x in self.room.exits:
-        if x.name == a.split(' ')[1]:
+        if x.name == a.split(' > ')[1]:
           self.unlock(x)
           done = True
           print('yes')
       if done == False:
         for x in self.room.contents:
-          if x.name == a.split(' ')[1]:
+          if x.name == a.split(' > ')[1]:
             x.unlock(self)
             print('yessss')
 
-    elif a.split(' ')[0] in ['examine', 'look']:
+    elif a.split(' > ')[0] in ['examine', 'look']:
       done = False
       for x in self.contents:
-        if x.name == a.split(' ')[1]:
+        if x.name == a.split(' > ')[1]:
           print(x.desc)
           done = True
       if done == False:
         for x in self.room.contents:
-          if x.name == a.split(' ')[1]:
+          if x.name == a.split(' > ')[1]:
             print(x.desc)
 
-    elif a.split(' ')[0] in ['bar', 'barricade', 'block']:
+    elif a.split(' > ')[0] in ['bar', 'barricade', 'block']:
       for x in self.room.contents:
         if type(x) is Container:
-          if x.name == a.split(' ')[1]:
+          if x.name == a.split(' > ')[1]:
             if x.movable == True:
               for y in self.room.exits:
-                if y.name == a.split(' ')[2]:
+                if y.name == a.split(' > ')[2]:
                   y.blockade(x)
 
-    #elif a.split(' ')[0] in ['unbar', 'unblock', 'unbarricade']:
+    #elif a.split(' > ')[0] in ['unbar', 'unblock', 'unbarricade']:
       #for x in self.room.exits
 
     elif a == 'exit':
@@ -281,7 +281,7 @@ cupboards     = Container(kitchen, 'cupboards')
 body          = Container(kitchen, 'corpse')
 body_2        = Container(conservatory, 'corpse')
 safe_kitchen  = Safe(kitchen, 'safe', 256342)
-safe_bedroom  = Safe(bedroom, 'safe', 'x')
+safe_bedroom  = Safe(bedroom, 'bedroom safe', 'x')
 
 shelf.movable         = True
 table.movable         = True
