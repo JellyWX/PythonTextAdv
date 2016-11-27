@@ -24,12 +24,13 @@ class Container(object):
       print('Container not available')
 
 class Room(Container):
+  movable = False
 
   def __init__(self, n):
     self.name = n
     self.exits = []
     self.contents = []
-    self.locked = False
+    self.locked = []
     self.room = self
     self.barricade = []
     print('N:spawned in a room. name:' + self.name + ', exits:' + str(self.exits))
@@ -41,6 +42,8 @@ class Room(Container):
 
   def addExit(self, e):
     self.exits.append(e)
+    if not(self in e.exits):
+      e.addExit(self)
 
   def search(self):
     print('Room contents:')
@@ -111,6 +114,7 @@ class PlayerObj(Container):
     self.room = r
     self.health = h
     self.contents = []
+    self.playing = True
     print('N:new player object spawned in at ' + self.room.name)
 
   def unlock(self, r):
@@ -122,13 +126,18 @@ class PlayerObj(Container):
 
   def doAction(self, a):
     a = a.strip(' ')
-    if a == 'rooms':
+    a = a.lower()
+    if a.split(' ')[0] == 'rooms':
       self.room.eval()
 
     elif a.split(' ')[0] == 'room':
       for x in self.room.exits:
         if x.name == a.split(' ')[1]:
-          if x.locked == True:
+          if self.room in x.locked:
+            print('The connection is locked. Unlock rooms using `> unlock <room>`')
+          elif x in self.room.locked:
+            print('The connection is locked. Unlock rooms using `> unlock <room>`')
+          elif True in x.locked:
             print('The room is locked. Unlock rooms using `> unlock <room>`')
           elif len(x.barricade) > 0:
             print('Room is barricaded. Remove barricades using `> unblock <room>`')
@@ -232,35 +241,36 @@ class PlayerObj(Container):
 
 
     elif a == 'exit':
-      exit()
+      self.playing = False
 
     else:
       print('Not recognised command. Try again')
 
-bedroom = Room('bedroom')
-landing = Room('landing')
-stairs = Room('stairs')
-hall = Room('hall')
-kitchen = Room('kitchen')
-conservatory = Room('conservatory')
+bedroom       = Room('bedroom')
+landing       = Room('landing')
+stairs        = Room('stairs')
+hall          = Room('hall')
+lounge        = Room('lounge')
+kitchen       = Room('kitchen')
+conservatory  = Room('conservatory')
 
-shelf = Container(hall, 'shelf')
-bed = Container(bedroom, 'bed')
-table = Container(kitchen, 'table')
-cupboards = Container(kitchen, 'cupboards')
-body = Container(kitchen, 'corpse')
-body_2 = Container(conservatory, 'corpse')
-safe_kitchen = Safe(kitchen, 'safe', 256342)
-safe_bedroom = Safe(bedroom, 'safe', 'x')
+shelf         = Container(hall, 'shelf')
+bed           = Container(bedroom, 'bed')
+table         = Container(kitchen, 'table')
+cupboards     = Container(kitchen, 'cupboards')
+body          = Container(kitchen, 'corpse')
+body_2        = Container(conservatory, 'corpse')
+safe_kitchen  = Safe(kitchen, 'safe', 256342)
+safe_bedroom  = Safe(bedroom, 'safe', 'x')
 
-shelf.desc = 'A set of white, wooden shelves.'
-bed.desc = 'A bed with a mutilated mattress. All the springs and most of the stuffing has been stripped away.'
-table.desc = 'An intact 4-legged dining table.'
-cupboards.desc = 'Cupboards surround the room, although most have no doors and have had the hinges removed.'
-body.desc = 'A corpse leaves an acrid scent in the room. Scars cover his body and dried blood covers his neck from a large open wound caused by a knife.'
-body_2.desc = 'A corpse, mostly intact. 2 bullet holes fill his chest and head.'
-safe_kitchen.desc = 'A metal safe with an electric code lock.'
-safe_bedroom.desc = 'A metal safe with a key hole.'
+shelf.desc         = 'A set of white, wooden shelves.'
+bed.desc           = 'A bed with a mutilated mattress. All the springs and most of the stuffing has been stripped away.'
+table.desc         = 'An intact 4-legged dining table.'
+cupboards.desc     = 'Cupboards surround the room, although most have no doors and have had the hinges removed.'
+body.desc          = 'A corpse leaves an acrid scent in the room. Scars cover his body and dried blood covers his neck from a large open wound caused by a knife.'
+body_2.desc        = 'A corpse, mostly intact. 2 bullet holes fill his chest and head.'
+safe_kitchen.desc  = 'A metal safe with an electric code lock.'
+safe_bedroom.desc  = 'A metal safe with a key hole.'
 
 key_safe_bedroom = Item(safe_kitchen, 'key')
 key_safe_bedroom.misc_attr.append('canUnlock safe_bedroom')
@@ -276,35 +286,33 @@ knife_2 = Item(body, 'knife')
 
 note = Item(body, 'note')
 
-key_safe_bedroom.desc = 'A small key, like a window key.'
-key_kitchen.desc = 'A large bolt-lock key.'
-key_conservatory.desc = 'A small key but too small to be for an external door.'
-knife.desc = 'A sharp blade covered in blood.'
-knife_2.desc = 'A sharp blade covered in blood.'
-note.desc = 'A crumpled piece of paper with `256342` written on it.'
+key_safe_bedroom.desc  = 'A small key, like a window key.'
+key_kitchen.desc       = 'A large bolt-lock key.'
+key_conservatory.desc  = 'A small key but too small to be for an external door.'
+knife.desc             = 'A sharp blade covered in blood.'
+knife_2.desc           = 'A sharp blade covered in blood.'
+note.desc              = 'A crumpled piece of paper with `256342` written on it.'
 
 bedroom.addExit(landing)
 
-landing.addExit(bedroom)
 landing.addExit(stairs)
 
-stairs.addExit(landing)
 stairs.addExit(hall)
 
 hall.addExit(kitchen)
-hall.addExit(stairs)
+hall.addExit(lounge)
 
-kitchen.addExit(hall)
+lounge.addExit(kitchen)
+
 kitchen.addExit(conservatory)
-kitchen.locked = True
+kitchen.locked = [hall]
 
-conservatory.addExit(kitchen)
-conservatory.locked = True
+conservatory.locked = [True]
 
 player = PlayerObj(kitchen, 100)
 
-playing = True
-
-while(playing == True):
+while player.playing == True:
   action = input(' > ')
   player.doAction(action)
+
+exit()
