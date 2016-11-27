@@ -82,7 +82,7 @@ class Safe(Container):
     if client.room == self.room:
       if self.locked == True:
         for x in client.contents:
-          if 'canUnlock ' + self.name in x.misc_attr:
+          if ('canUnlock ' + self.name) in x.misc_attr:
             print('Safe unlocked with key')
             x.name += ' (' + self.name + ')'
             self.locked = False
@@ -230,10 +230,12 @@ class PlayerObj(Container):
         if x.name == a.split(' ')[1]:
           self.unlock(x)
           done = True
+          print('yes')
       if done == False:
         for x in self.room.contents:
           if x.name == a.split(' ')[1]:
             x.unlock(self)
+            print('yessss')
 
     elif a.split(' ')[0] in ['examine', 'look']:
       done = False
@@ -296,7 +298,7 @@ safe_kitchen.desc  = 'A metal safe with an electric code lock.'
 safe_bedroom.desc  = 'A metal safe with a key hole.'
 
 key_safe_bedroom = Item(safe_kitchen, 'key')
-key_safe_bedroom.misc_attr.append('canUnlock safe_bedroom')
+key_safe_bedroom.misc_attr.append('canUnlock bedroom safe')
 
 key_kitchen = Item(shelf, 'key')
 key_kitchen.misc_attr.append('canUnlock kitchen')
