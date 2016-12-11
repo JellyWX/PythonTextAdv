@@ -33,7 +33,6 @@ class Room(Container):
     self.contents = []
     self.locked = []
     self.room = self
-    self.barricade = []
     print('N:spawned in a room. name:' + self.name + ', exits:' + str(self.exits))
 
   def eval(self):
@@ -49,13 +48,10 @@ class Room(Container):
   def search(self):
     print('Room contents:')
     for x in self.contents:
-      if (type(x) is Safe) and x.locked == False:
+      if (type(x) is Safe) and (not x.locked):
         print(' - ' + x.name + ' (unlocked) ')
       else:
         print(' - ' + x.name + ' ')
-
-  def blockade(self, bar):
-    self.barricade.append(bar)
 
 class Item(object):
   def __init__(self, c, n):
@@ -124,7 +120,11 @@ class PlayerObj(Container):
     self.health = h
     self.contents = []
     self.playing = True
+    self.lastaction = None
     print('N:new player object spawned in at ' + self.room.name)
+
+  def lastactionEx(self, n, a):
+    self.lastaction.insert(0,[n,a])
 
   def unlock(self, r):
     if self.room in r.locked:
@@ -144,7 +144,7 @@ class PlayerObj(Container):
       if x.name == i:
         print(x.desc)
         done = True
-    if done == False:
+    if not done:
       for x in self.room.contents:
         if x.name == i:
           print(x.desc)
@@ -171,8 +171,6 @@ class PlayerObj(Container):
           print('The connection is locked. Unlock rooms using `> unlock <room>`')
         elif True in x.locked:
           print('The room is locked. Unlock rooms using `> unlock <room>`')
-        elif len(x.barricade) > 0:
-          print('Room is barricaded. Remove barricades using `> unblock <room>`')
         else:
           print(self.room.name + ' >> ' + i)
           self.room = x
@@ -190,6 +188,7 @@ class PlayerObj(Container):
       a = a[2:]
       a = a.strip()
       self.moveRoom(a)
+      self.lastaction.insert(0, ['go',self.room])
 
     elif a[:5] == 'take ':
       a = a[5:]
@@ -227,6 +226,7 @@ class PlayerObj(Container):
           if (' ' + x.name + ' ') == a:
             if x.carriable:
               x.move(self)
+              self.lastaction.insert(0,['take',x])
               i = 1
               j = x.name
               for z in self.contents:
@@ -247,6 +247,7 @@ class PlayerObj(Container):
       a = a[4:]
       a = a.strip()
       self.drop(a)
+
 
     elif a == 'scan':
       self.room.search()
@@ -281,25 +282,43 @@ class PlayerObj(Container):
       a = a.strip()
       self.examine(a)
 
-    elif a.split(' > ')[0] in ['bar', 'barricade', 'block']:
-      for x in self.room.contents:
-        if type(x) is Container:
-          if x.name == a.split(' > ')[1]:
-            if x.movable == True:
-              for y in self.room.exits:
-                if y.name == a.split(' > ')[2]:
-                  y.blockade(x)
-
     elif a in ['inventory', 'inv', 'i']:
       print('Inventory:')
       for x in self.contents:
         print(' - ' + x.name + ' ')
+
+    elif a in ['help', '?']:
+
 
     elif a == 'exit':
       self.playing = False
 
     else:
       print('Not recognised command. Try again')
+
+class Guide(object):
+  ## The guide is designed to lead the player through the game and create a storyline ##
+
+  def __init__(self, p):
+    self.tracking = p
+    self.orderedevents = []
+    print('N:started a guide')
+
+  def addEventListener(self, l, s, c):
+    self.orderedevents.append([l,s,c])
+
+  def scanEventListener(self):
+    detection = self.orderedevents[0][0]
+    trigger = self.orderedevents[0][1]
+    action = self.orderedevents[0][2]
+    if type(detection) is list:
+
+    else:
+      if detection == 'inv':
+        for i in self.tracking.contents:
+          if i == trigger:
+            c()
+            ## ~ TODO ~ ##
 
 bedroom       = Room('bedroom')
 landing       = Room('landing')
