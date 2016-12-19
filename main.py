@@ -120,11 +120,7 @@ class PlayerObj(Container):
     self.health = h
     self.contents = []
     self.playing = True
-    self.lastaction = None
     print('N:new player object spawned in at ' + self.room.name)
-
-  def lastactionEx(self, n, a):
-    self.lastaction.insert(0,[n,a])
 
   def unlock(self, r):
     if self.room in r.locked:
@@ -188,7 +184,6 @@ class PlayerObj(Container):
       a = a[2:]
       a = a.strip()
       self.moveRoom(a)
-      self.lastaction.insert(0, ['go',self.room])
 
     elif a[:5] == 'take ':
       a = a[5:]
@@ -226,7 +221,6 @@ class PlayerObj(Container):
           if (' ' + x.name + ' ') == a:
             if x.carriable:
               x.move(self)
-              self.lastaction.insert(0,['take',x])
               i = 1
               j = x.name
               for z in self.contents:
@@ -288,7 +282,7 @@ class PlayerObj(Container):
         print(' - ' + x.name + ' ')
 
     elif a in ['help', '?']:
-
+      print('No help manual available currently')
 
     elif a == 'exit':
       self.playing = False
@@ -299,26 +293,51 @@ class PlayerObj(Container):
 class Guide(object):
   ## The guide is designed to lead the player through the game and create a storyline ##
 
-  def __init__(self, p):
+  def __init__(self, n, p):
+    self.checks = [False]
     self.tracking = p
     self.orderedevents = []
+    self.detection = []
+    self.trigger = []
+    self.action = None
+    self.name = n
     print('N:started a guide')
 
   def addEventListener(self, l, s, c):
     self.orderedevents.append([l,s,c])
 
   def scanEventListener(self):
-    detection = self.orderedevents[0][0]
-    trigger = self.orderedevents[0][1]
-    action = self.orderedevents[0][2]
-    if type(detection) is list:
-
-    else:
-      if detection == 'inv':
-        for i in self.tracking.contents:
-          if i == trigger:
-            c()
-            ## ~ TODO ~ ##
+    self.checks = []
+    for x in self.detection:
+      self.checks.append(False)
+      
+    if 'inv' in self.detection:
+      for i in self.tracking.contents:
+        if i in self.trigger:
+          y = 0
+          for y in range(0,len(self.checks)):
+            if self.checks[y] == False:
+              self.checks[y] = True
+              break
+    if 'room' in self.detection:
+      if self.tracking.room in self.trigger:
+        for y in range(0,len(self.checks)):
+          if self.checks[y] == False:
+            self.checks[y] = True
+            break
+    if False in self.checks:
+      print(str(self.checks))
+      pass
+    elif True in self.checks:
+      eval(self.action)
+      self.orderedevents.pop(0)
+      try:
+        self.detection = self.orderedevents[0][0]
+        self.trigger = self.orderedevents[0][1]
+        self.action = self.orderedevents[0][2]
+      except:
+        self.detection = [None]
+        print(self.name + ' quests completed!')
 
 bedroom       = Room('bedroom')
 landing       = Room('landing')
@@ -360,10 +379,9 @@ key_kitchen.misc_attr.append('canUnlock kitchen')
 key_conservatory = Item(table, 'key')
 key_conservatory.misc_attr.append('canUnlock conservatory')
 
-knife = Item(kitchen, 'knife')
-knife_2 = Item(body, 'knife')
-
-note = Item(body, 'note')
+knife    = Item(kitchen, 'knife')
+knife_2  = Item(body, 'knife')
+note     = Item(body, 'note')
 
 key_safe_bedroom.desc  = 'A small key, like a window key.'
 key_kitchen.desc       = 'A large bolt-lock key.'
@@ -388,10 +406,26 @@ kitchen.locked = [hall]
 
 conservatory.locked = [kitchen]
 
-player = PlayerObj(kitchen, 100)
+player = PlayerObj(lounge, 100)
+guide = Guide('Main', player)
+
+def room_lounge_tut():
+  print('Use the command \'rooms\' to see available connections.\nUse the command \'go <room>\' to move rooms. Try to find the kitchen.')
+def room_kitchen_tut():
+  print('Use the command \'scan\' to view objects in the room.\nUse the command \'take\' to pick up a stray item')
+def inv_knife_tut():
+  print('Great! You can use the \'inv\' command to view what items you\'re carrying.\nHowever, sometimes an item may be located inside a container. Use \'search <container>\' and \'take <container> <item>\'')
+
+guide.addEventListener(['room'],[lounge],'room_lounge_tut()')
+guide.addEventListener(['room'],[kitchen],'room_kitchen_tut()')
+guide.addEventListener(['room', 'inv'],[kitchen,knife],'inv_knife_tut()')
+
+guide.detection = guide.orderedevents[0][0]
+guide.trigger = guide.orderedevents[0][1]
+guide.action = guide.orderedevents[0][2]
 
 while player.playing == True:
   action = input(' > ')
   player.doAction(action)
-
-exit()
+  guide.scanEventListener()
+exit('While loop fell through.')
