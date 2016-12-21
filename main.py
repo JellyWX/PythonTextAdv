@@ -6,7 +6,7 @@ class Container(object):
     self.locked = False
     self.movable = False
     self.desc = 'No description available'
-    self.barricading = False
+    self.carriable = False
     print('N:created container ' + self.name + ' with no contents at ' + self.room.name)
     self.room.addContent(self)
 
@@ -76,6 +76,7 @@ class Safe(Container):
     self.contents = []
     self.locked = True
     self.corr_pass = p
+    self.carriable = False
     print('N:created container ' + self.name + ' with no contents at ' + self.room.name)
     self.room.addContent(self)
 
