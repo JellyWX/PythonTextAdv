@@ -68,6 +68,34 @@ class Item(object):
     self.container = collector
     collector.contents.append(self)
 
+class NonePlayerObj(object):
+  def __init__(self, r, n, h):
+    self.room = r
+    self.name = n
+    self.health = h
+    self.hostility = []
+
+  def move(self):
+    self.moves = self.room.exits
+    self.rooms_occupied = []
+    for p in self.moves:
+      for p2 in p.exits:
+        for q in self.hostility:
+          if q[0] == 'evade':
+            if q[1].room == self.room:
+              self.rooms_occupied.append([-4,self.room])
+            elif q[1].room == p:
+              self.rooms_occupied.append([-3,p])
+              self.rooms_occupied.append([-1,p.exits])
+            elif q[1].room == p2:
+              self.rooms_occupied.append([-2,p2])
+          elif q[0] == 'attack':
+            if q[1].room == p:
+
+  def die(self):
+    self.room = heaven
+    self.health = 0
+
 class Safe(Container):
   def __init__(self, r, n, p):
     self.room = r
@@ -310,7 +338,7 @@ class Guide(object):
     self.checks = []
     for x in self.detection:
       self.checks.append(False)
-      
+
     if 'inv' in self.detection:
       for i in self.tracking.contents:
         if i in self.trigger:
@@ -345,6 +373,7 @@ hall          = Room('hall')
 lounge        = Room('lounge')
 kitchen       = Room('kitchen')
 conservatory  = Room('conservatory')
+heaven        = Room('heaven')
 
 shelf         = Container(hall, 'shelf')
 bed           = Container(bedroom, 'bed')
@@ -418,10 +447,14 @@ guide.detection = guide.orderedevents[0][0]
 guide.trigger = guide.orderedevents[0][1]
 guide.action = guide.orderedevents[0][2]
 
-guide.scanEventListener()
+def refreshGuides():
+  guide.scanEventListener()
+
+refreshGuides()
 
 while player.playing == True:
   action = input(' > ')
   player.doAction(action)
-  guide.scanEventListener()
+  refreshGuides()
+
 exit('While loop fell through.')
