@@ -4,7 +4,6 @@ class Container(object):
     self.name = n
     self.contents = []
     self.locked = False
-    self.movable = False
     self.desc = 'No description available'
     self.carriable = False
     print('N:created container ' + self.name + ' with no contents at ' + self.room.name)
@@ -356,11 +355,6 @@ body          = Container(kitchen, 'corpse')
 body_2        = Container(conservatory, 'corpse')
 safe_kitchen  = Safe(kitchen, 'safe', 256342)
 safe_bedroom  = Safe(bedroom, 'bedroom safe', 'x')
-
-shelf.movable         = True
-table.movable         = True
-safe_kitchen.movable  = True
-safe_bedroom.movable  = True
 
 shelf.desc         = 'A set of white, wooden shelves.'
 bed.desc           = 'A bed with a mutilated mattress. All the springs and most of the stuffing has been stripped away.'
