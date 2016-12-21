@@ -418,6 +418,8 @@ guide.detection = guide.orderedevents[0][0]
 guide.trigger = guide.orderedevents[0][1]
 guide.action = guide.orderedevents[0][2]
 
+guide.scanEventListener()
+
 while player.playing == True:
   action = input(' > ')
   player.doAction(action)
