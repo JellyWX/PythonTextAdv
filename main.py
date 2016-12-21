@@ -160,7 +160,7 @@ class PlayerObj(Container):
 
   def moveRoom(self, i):
     for x in self.room.exits:
-      if x.name == i:
+      if x.name.lower() == i:
         if self.room in x.locked:
           print('The connection is locked. Unlock rooms using `> unlock <room>`')
         elif x in self.room.locked:
