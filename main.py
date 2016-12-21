@@ -326,7 +326,6 @@ class Guide(object):
             self.checks[y] = True
             break
     if False in self.checks:
-      print(str(self.checks))
       pass
     elif True in self.checks:
       eval(self.action)
@@ -402,7 +401,7 @@ kitchen.locked = [hall]
 conservatory.locked = [kitchen]
 
 player = PlayerObj(lounge, 100)
-guide = Guide('Main', player)
+guide = Guide('Tutorial', player)
 
 def room_lounge_tut():
   print('Use the command \'rooms\' to see available connections.\nUse the command \'go <room>\' to move rooms. Try to find the kitchen.')
