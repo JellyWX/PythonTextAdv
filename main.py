@@ -30,6 +30,7 @@ class Room(Container):
     self.name = n
     self.exits = []
     self.contents = []
+    self.chars = []
     self.locked = []
     self.room = self
     print('N:spawned in a room. name:' + self.name + ', exits:' + str(self.exits))
@@ -91,6 +92,19 @@ class NonePlayerObj(object):
               self.rooms_occupied.append([-2,p2])
           elif q[0] == 'attack':
             if q[1].room == p:
+              self.rooms_occupied.append([4,self.room])
+            elif q[1].room == p2:
+              self.rooms_occupied.append([3,p])
+            elif q[1].room == self.room:
+              #self.attack(q[1])
+
+    if health < 1:
+      self.die()
+
+  def moveRoom(self, r):
+    self.room.chars.remove(self)
+    self.room = r
+    self.room.chars.append(self) 
 
   def die(self):
     self.room = heaven
