@@ -1,3 +1,5 @@
+from containers import Safe
+
 class Guide(object):
   ## The guide is designed to lead the player through the game and create a storyline ##
 
@@ -33,6 +35,11 @@ class Guide(object):
           if self.checks[y] == False:
             self.checks[y] = True
             break
+    if 'unlock_s' in self.detection:
+      for x in self.trigger:
+        if type(x) == Safe.Safe:
+          if x.locked == False:
+            pass ## TODO ##
     if False in self.checks:
       pass
     elif True in self.checks:

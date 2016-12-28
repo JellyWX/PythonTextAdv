@@ -38,13 +38,13 @@ safe_kitchen.desc  = 'A metal safe with an electric code lock.'
 safe_bedroom.desc  = 'A metal safe with a key hole.'
 
 key_safe_bedroom = Item.Item(safe_kitchen, 'key')
-key_safe_bedroom.misc_attr.append('canUnlock bedroom safe')
+key_safe_bedroom.misc_attr['canUnlock'] = safe_bedroom
 
 key_kitchen = Item.Item(shelf, 'key')
-key_kitchen.misc_attr.append('canUnlock kitchen')
+key_kitchen.misc_attr['canUnlock'] = kitchen
 
 key_conservatory = Item.Item(table, 'key')
-key_conservatory.misc_attr.append('canUnlock conservatory')
+key_conservatory.misc_attr['canUnlock'] = conservatory
 
 knife    = Item.Item(kitchen, 'knife')
 knife_2  = Item.Item(body, 'knife')
@@ -81,11 +81,14 @@ def room_lounge_tut():
 def room_kitchen_tut():
   print('Use the command \'scan\' to view objects in the room.\nUse the command \'take\' to pick up a stray item')
 def inv_knife_tut():
-  print('Great! You can use the \'inv\' command to view what items you\'re carrying.\nHowever, sometimes an item may be located inside a container. Use \'search <container>\' and \'take <container> <item>\'')
+  print('Great! You can use the \'inv\' command to view what items you\'re carrying.\nHowever, sometimes an item may be located inside a container. Use \'search <container>\' and \'take <container> <item>\' to collect the note from the corpse')
+def inv_note_tut():
+  print('Nice! You can use the \'look <item or container>\' command to examine objects. Have a look at some of the things in the room.')
 
 guide.addEventListener(['room'],[lounge],room_lounge_tut)
 guide.addEventListener(['room'],[kitchen],room_kitchen_tut)
 guide.addEventListener(['room', 'inv'],[kitchen,knife],inv_knife_tut)
+guide.addEventListener(['room', 'inv'],[kitchen,note],inv_note_tut)
 
 guide.detection = guide.orderedevents[0][0]
 guide.trigger = guide.orderedevents[0][1]

@@ -12,14 +12,20 @@ class PlayerObj(Container.Container):
   def unlock(self, r):
     if self.room in r.locked:
       for i in self.contents:
-        if ('canUnlock ' + r.name) in i.misc_attr:
-          r.locked.remove(self.room)
-          i.name += ' (' + r.name + ')'
+        try:
+          if i.misc_attr['canUnlock'] == r:
+            r.locked.remove(self.room)
+            i.name += ' (' + r.name + ')'
+        except:
+          pass
     elif r in self.room.locked:
       for i in self.contents:
-        if ('canUnlock ' + self.room.name) in i.misc_attr:
-          self.room.locked.remove(r)
-          i.name += ' (' + self.room.name + ')'
+        try:
+          if i.misc_attr['canUnlock'] == self.room:
+            self.room.locked.remove(r)
+            i.name = i.orrname + ' (' + self.room.name + ')'
+        except:
+          pass
 
   def examine(self, i):
     done = False
@@ -131,7 +137,6 @@ class PlayerObj(Container.Container):
       a = a.strip()
       self.drop(a)
 
-
     elif a == 'scan':
       self.room.search()
 
@@ -162,6 +167,11 @@ class PlayerObj(Container.Container):
 
     elif a[:5] == 'look ':
       a = a[4:]
+      a = a.strip()
+      self.examine(a)
+
+    elif a[:8] == 'examine ':
+      a = a[7:]
       a = a.strip()
       self.examine(a)
 

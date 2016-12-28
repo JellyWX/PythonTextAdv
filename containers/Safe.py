@@ -15,10 +15,13 @@ class Safe(Container.Container):
     if client.room == self.room:
       if self.locked == True:
         for x in client.contents:
-          if ('canUnlock ' + self.name) in x.misc_attr:
-            print('Safe unlocked with key')
-            x.name = x.orrname + ' (' + self.name + ')'
-            self.locked = False
+          try:
+            if x.misc_attr['canUnlock'] == self:
+              print('Safe unlocked with key')
+              x.name = x.orrname + ' (' + self.name + ')'
+              self.locked = False
+          except:
+            pass
         self.usr_pass = 000000
         if isinstance(self.corr_pass, int):
           while self.locked:

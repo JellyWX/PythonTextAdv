@@ -4,7 +4,7 @@ class Item(object):
     self.name = n
     self.orrname = n
     self.carriable = True
-    self.misc_attr = []
+    self.misc_attr = {}
     self.desc = 'No description available'
     print('N:created a new ' + self.name + ' in ' + self.container.name)
     self.container.addContent(self)
