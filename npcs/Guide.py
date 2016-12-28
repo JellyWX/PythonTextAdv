@@ -1,5 +1,3 @@
-from container_classes import *
-
 class Guide(object):
   ## The guide is designed to lead the player through the game and create a storyline ##
 
@@ -47,33 +45,3 @@ class Guide(object):
       except:
         self.detection = [None]
         print(self.name + ' quests completed!')
-
-class NonePlayerObj(object):
-  def __init__(self, r, n, h):
-    self.room = r
-    self.name = n
-    self.health = h
-
-  def moveRoom(self, r):
-    self.room.chars.remove(self)
-    self.room = r
-    self.room.chars.append(self)
-
-class Zombie(NonePlayerObj):
-  def __init__(self, r, n, h):
-    self.room = r
-    self.name = n
-    self.health = h
-
-  def move(self):
-    for x in self.room.chars:
-      if type(x) == PlayerObj:
-        pass ##Attack player##
-      else:
-        moveRoom(choice(self.room.exits))
-
-    if health < 1:
-      self.die()
-
-  def die(self):
-    self.moveRoom(heaven)

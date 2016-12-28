@@ -1,6 +1,6 @@
-from container_classes import *
+from containers import Container
 
-class PlayerObj(Container):
+class PlayerObj(Container.Container):
   def __init__(self, r, h):
     self.room = r
     self.room.chars.append(self)

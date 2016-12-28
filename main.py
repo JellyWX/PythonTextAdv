@@ -1,25 +1,32 @@
-from random import choice
-from container_classes import *
-from player import *
-from npc import *
+from containers import Room
+from containers import Container
+from containers import Safe
 
-bedroom       = Room('bedroom')
-landing       = Room('landing')
-stairs        = Room('stairs')
-hall          = Room('hall')
-lounge        = Room('lounge')
-kitchen       = Room('kitchen')
-conservatory  = Room('conservatory')
-heaven        = Room('heaven')
+from PlayerObj import PlayerObj
 
-shelf         = Container(hall, 'shelf')
-bed           = Container(bedroom, 'bed')
-table         = Container(kitchen, 'table')
-cupboards     = Container(kitchen, 'cupboards')
-body          = Container(kitchen, 'corpse')
-body_2        = Container(conservatory, 'corpse')
-safe_kitchen  = Safe(kitchen, 'safe', 256342)
-safe_bedroom  = Safe(bedroom, 'bedroom safe', 'x')
+from items import Item
+
+from npcs import Guide
+from npcs import NonePlayerObj
+from npcs import Zombie
+
+bedroom       = Room.Room('bedroom')
+landing       = Room.Room('landing')
+stairs        = Room.Room('stairs')
+hall          = Room.Room('hall')
+lounge        = Room.Room('lounge')
+kitchen       = Room.Room('kitchen')
+conservatory  = Room.Room('conservatory')
+heaven        = Room.Room('heaven')
+
+shelf         = Container.Container(hall, 'shelf')
+bed           = Container.Container(bedroom, 'bed')
+table         = Container.Container(kitchen, 'table')
+cupboards     = Container.Container(kitchen, 'cupboards')
+body          = Container.Container(kitchen, 'corpse')
+body_2        = Container.Container(conservatory, 'corpse')
+safe_kitchen  = Safe.Safe(kitchen, 'safe', 256342)
+safe_bedroom  = Safe.Safe(bedroom, 'bedroom safe', 'x')
 
 shelf.desc         = 'A set of white, wooden shelves.'
 bed.desc           = 'A bed with a mutilated mattress. All the springs and most of the stuffing has been stripped away.'
@@ -30,18 +37,18 @@ body_2.desc        = 'A corpse, mostly intact. 2 bullet holes fill his chest and
 safe_kitchen.desc  = 'A metal safe with an electric code lock.'
 safe_bedroom.desc  = 'A metal safe with a key hole.'
 
-key_safe_bedroom = Item(safe_kitchen, 'key')
+key_safe_bedroom = Item.Item(safe_kitchen, 'key')
 key_safe_bedroom.misc_attr.append('canUnlock bedroom safe')
 
-key_kitchen = Item(shelf, 'key')
+key_kitchen = Item.Item(shelf, 'key')
 key_kitchen.misc_attr.append('canUnlock kitchen')
 
-key_conservatory = Item(table, 'key')
+key_conservatory = Item.Item(table, 'key')
 key_conservatory.misc_attr.append('canUnlock conservatory')
 
-knife    = Item(kitchen, 'knife')
-knife_2  = Item(body, 'knife')
-note     = Item(body, 'note')
+knife    = Item.Item(kitchen, 'knife')
+knife_2  = Item.Item(body, 'knife')
+note     = Item.Item(body, 'note')
 
 key_safe_bedroom.desc  = 'A small key, like a window key.'
 key_kitchen.desc       = 'A large bolt-lock key.'
@@ -67,7 +74,7 @@ kitchen.locked = [hall]
 conservatory.locked = [kitchen]
 
 player = PlayerObj(lounge, 100)
-guide = Guide('Tutorial', player)
+guide = Guide.Guide('Tutorial', player)
 
 def room_lounge_tut():
   print('Use the command \'rooms\' to see available connections.\nUse the command \'go <room>\' to move rooms. Try to find the kitchen.')
