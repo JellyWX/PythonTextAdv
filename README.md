@@ -21,15 +21,15 @@ To link 2 rooms together, you can append to the exits of a room. The premade `ad
 To lock a room, you can alter the 'locked' variable. The 'locked' variable is a list which can be used to note from which direction a room is locked. Say we have rooms 1,2 and 3 set out as below:
 
 ____________
-|          |   room1 = Room.Room('new room')
+|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|   room1 = Room.Room('new room')
 
-|    |  2  |   room2 = Room.Room('new room2')
+|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;2&nbsp;&nbsp;|   room2 = Room.Room('new room2')
 
-| 1  |---- |   room3 = Room.Room('new room3')
+|&nbsp;1&nbsp;&nbsp;|----&nbsp;|   room3 = Room.Room('new room3')
 
-|    |  3  |   room1.addExit(room2)
+|&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;3&nbsp;&nbsp;|   room1.addExit(room2)
 
-|    |     |   room1.addExit(room3)
+|&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|   room1.addExit(room3)
 
 |__________|   room3.addExit(room2)
 
