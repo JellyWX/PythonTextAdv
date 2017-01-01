@@ -1,4 +1,5 @@
 from containers import Container
+from items import Key
 
 class Safe(Container.Container):
   def __init__(self, r, n, p):
@@ -15,13 +16,12 @@ class Safe(Container.Container):
     if client.room == self.room:
       if self.locked == True:
         for x in client.contents:
-          try:
-            if x.misc_attr['canUnlock'] == self:
-              print('Safe unlocked with key')
-              x.name = x.orrname + ' (' + self.name + ')'
+          if type(x) == Key.Key:
+            if self in x.unlocks:
               self.locked = False
-          except:
-            pass
+              x.name = x.orrname + ' (' + self.name + ')'
+              print('Safe unlocked')
+
         self.usr_pass = 000000
         if isinstance(self.corr_pass, int):
           while self.locked:

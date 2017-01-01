@@ -5,6 +5,7 @@ from containers import Safe
 from PlayerObj import PlayerObj
 
 from items import Item
+from items import Key
 
 from npcs import Guide
 from npcs import NonePlayerObj
@@ -37,14 +38,11 @@ body_2.desc        = 'A corpse, mostly intact. 2 bullet holes fill his chest and
 safe_kitchen.desc  = 'A metal safe with an electric code lock.'
 safe_bedroom.desc  = 'A metal safe with a key hole.'
 
-key_safe_bedroom = Item.Item(safe_kitchen, 'key')
-key_safe_bedroom.misc_attr['canUnlock'] = safe_bedroom
+key_safe_bedroom = Key.Key(safe_kitchen, [safe_bedroom])
 
-key_kitchen = Item.Item(shelf, 'key')
-key_kitchen.misc_attr['canUnlock'] = kitchen
+key_kitchen = Key.Key(shelf, [kitchen, hall])
 
-key_conservatory = Item.Item(table, 'key')
-key_conservatory.misc_attr['canUnlock'] = conservatory
+key_conservatory = Key.Key(table, [conservatory, kitchen])
 
 knife    = Item.Item(kitchen, 'knife')
 knife_2  = Item.Item(body, 'knife')

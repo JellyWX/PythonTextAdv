@@ -1,4 +1,5 @@
 from containers import Container
+from items import Key
 
 class PlayerObj(Container.Container):
   def __init__(self, r, h):
@@ -10,22 +11,18 @@ class PlayerObj(Container.Container):
     print('N:new player object spawned in at ' + self.room.name)
 
   def unlock(self, r):
-    if self.room in r.locked:
+    if (self.room in r.locked) or (r in self.room.locked):
       for i in self.contents:
-        try:
-          if i.misc_attr['canUnlock'] == r:
-            r.locked.remove(self.room)
-            i.name += ' (' + r.name + ')'
-        except:
-          pass
-    elif r in self.room.locked:
-      for i in self.contents:
-        try:
-          if i.misc_attr['canUnlock'] == self.room:
-            self.room.locked.remove(r)
-            i.name = i.orrname + ' (' + self.room.name + ')'
-        except:
-          pass
+        if type(i) == Key.Key:
+          if (self.room in i.unlocks) and (r in i.unlocks):
+            try:
+              r.locked.remove(self.room)
+            except:
+              self.room.locked.remove(r)
+            i.name = i.orrname + ' (' + r.name + ')'
+            print('Room unlocked')
+    else:
+      print('Room not locked')
 
   def examine(self, i):
     done = False
@@ -157,7 +154,6 @@ class PlayerObj(Container.Container):
       for x in self.room.exits:
         if x.name == a:
           self.unlock(x)
-          print('done')
           done = True
 
       if done == False:
