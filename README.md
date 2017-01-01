@@ -19,13 +19,19 @@ You should be able to pick up a lot of this from the pre-existing code. To make 
 To link 2 rooms together, you can append to the exits of a room. The premade `addExit()` method can be used to connect 2 rooms together. So for example `room1.addExit(room2)` presuming you've already made room1 and room2. You don't need to add the exit to room2; this is done automatically.
 ####Locking rooms
 To lock a room, you can alter the 'locked' variable. The 'locked' variable is a list which can be used to note from which direction a room is locked. Say we have rooms 1,2 and 3 set out as below:
+_____
+`room1 = Room.Room('new room')
 
-room1 = Room.Room('new room')
 room2 = Room.Room('new room2')
+
 room3 = Room.Room('new room3')
+
 room1.addExit(room2)
+
 room1.addExit(room3)
-room3.addExit(room2)
+
+room3.addExit(room2)`
+_____
 
 If you wanted to, say, lock room 2, then you can use `room2.locked = [room1, room3]` or `room1.locked = [room2];room3.locked = [room2]` where the ; is a linebreak.
 If you only typed `room2.locked = [room1]`, you could still access the room by going first into room3 and then into room2.
