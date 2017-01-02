@@ -11,6 +11,8 @@ from npcs import Guide
 from npcs import NonePlayerObj
 from npcs import Zombie
 
+from GuideTut import *
+
 bedroom       = Room.Room('bedroom')
 landing       = Room.Room('landing')
 stairs        = Room.Room('stairs')
@@ -74,19 +76,16 @@ conservatory.locked = [kitchen]
 player = PlayerObj(lounge, 100)
 guide = Guide.Guide('Tutorial', player)
 
-def room_lounge_tut():
-  print('Use the command \'rooms\' to see available connections.\nUse the command \'go <room>\' to move rooms. Try to find the kitchen.')
-def room_kitchen_tut():
-  print('Use the command \'scan\' to view objects in the room.\nUse the command \'take\' to pick up a stray item')
-def inv_knife_tut():
-  print('Great! You can use the \'inv\' command to view what items you\'re carrying.\nHowever, sometimes an item may be located inside a container. Use \'search <container>\' and \'take <container> <item>\' to collect the note from the corpse')
-def inv_note_tut():
-  print('Nice! You can use the \'look <item or container>\' command to examine objects. Have a look at some of the things in the room.')
-
 guide.addEventListener(['room'],[lounge],room_lounge_tut)
 guide.addEventListener(['room'],[kitchen],room_kitchen_tut)
 guide.addEventListener(['room', 'inv'],[kitchen,knife],inv_knife_tut)
 guide.addEventListener(['room', 'inv'],[kitchen,note],inv_note_tut)
+guide.addEventListener(['room', 'inv'],[kitchen,key_conservatory],inv_key_tut)
+guide.addEventListener(['room', 'unlock_r'],[kitchen,[kitchen,conservatory]],unlock_conservatory_tut)
+guide.addEventListener(['room', 'unlock_s'],[kitchen,safe_kitchen],unlock_safe_tut)
+
+
+    ## STARTUP ##
 
 guide.detection = guide.orderedevents[0][0]
 guide.trigger = guide.orderedevents[0][1]
