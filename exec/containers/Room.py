@@ -2,8 +2,6 @@ from containers import Container
 from containers import Safe
 
 class Room(Container.Container):
-  movable = False
-
   def __init__(self, n):
     self.name = n
     self.exits = []
