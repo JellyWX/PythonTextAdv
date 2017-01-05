@@ -12,13 +12,22 @@ class Guide(object):
     self.trigger = []
     self.action = None
     self.name = n
+    self.progress = 0
     print('N:started a guide')
 
   def addEventListener(self, l, s, c):
     self.orderedevents.append([l,s,c])
 
   def scanEventListener(self):
+    print(str(self.progress) + ',' + str(self.detection))
     self.checks = []
+    try:
+      self.detection = self.orderedevents[self.progress][0]
+      self.trigger = self.orderedevents[self.progress][1]
+      self.action = self.orderedevents[self.progress][2]
+    except:
+      self.detection = [None]
+      print(self.name + ' completed')
     for x in self.detection:
       self.checks.append(False)
 
@@ -55,13 +64,8 @@ class Guide(object):
                   break
     if False in self.checks:
       pass
+      print(str(self.checks))
+      print(str(self.trigger))
     elif True in self.checks:
       self.action()
-      self.orderedevents.pop(0)
-      try:
-        self.detection = self.orderedevents[0][0]
-        self.trigger = self.orderedevents[0][1]
-        self.action = self.orderedevents[0][2]
-      except:
-        self.detection = [None]
-        print(self.name + ' quests completed!')
+      self.progress += 1

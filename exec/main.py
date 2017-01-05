@@ -86,21 +86,21 @@ player = PlayerObj(room_dict['lounge'], 100)
 guides_dict = {
                'tutorial' : Guide.Guide('Tutorial', player)
               }
-         
-guides_dict['tutorial'].addEventListener(['room'],             [ room_dict['lounge'] ],                                                   GuideTut.room_lounge_tut)
-guides_dict['tutorial'].addEventListener(['room'],             [ room_dict['kitchen'] ],                                                  GuideTut.room_kitchen_tut)
-guides_dict['tutorial'].addEventListener(['room', 'inv'],      [ room_dict['kitchen'] , item_dict['knife']],                              GuideTut.inv_knife_tut)
-guides_dict['tutorial'].addEventListener(['room', 'inv'],      [ room_dict['kitchen'] , item_dict['note']],                               GuideTut.inv_note_tut)
-guides_dict['tutorial'].addEventListener(['room', 'inv'],      [ room_dict['kitchen'] , item_dict['key_conservatory']],                   GuideTut.inv_key_tut)
-guides_dict['tutorial'].addEventListener(['room', 'unlock_r'], [ room_dict['kitchen'] ,[room_dict['kitchen'],room_dict['conservatory']]], GuideTut.unlock_conservatory_tut)
-guides_dict['tutorial'].addEventListener(['room', 'unlock_s'], [ room_dict['kitchen'] ,container_dict['safe_kitchen']],                   GuideTut.unlock_safe_tut)
 
+def events():
+  guides_dict['tutorial'].addEventListener(['room'],             [ room_dict['lounge'] ],                                                   GuideTut.room_lounge_tut)
+  guides_dict['tutorial'].addEventListener(['room'],             [ room_dict['kitchen'] ],                                                  GuideTut.room_kitchen_tut)
+  guides_dict['tutorial'].addEventListener(['room', 'inv'],      [ room_dict['kitchen'] , item_dict['knife']],                              GuideTut.inv_knife_tut)
+  guides_dict['tutorial'].addEventListener(['room', 'inv'],      [ room_dict['kitchen'] , item_dict['note']],                               GuideTut.inv_note_tut)
+  guides_dict['tutorial'].addEventListener(['room', 'inv'],      [ room_dict['kitchen'] , item_dict['key_conservatory']],                   GuideTut.inv_key_tut)
+  guides_dict['tutorial'].addEventListener(['room', 'unlock_r'], [ room_dict['kitchen'] ,[room_dict['kitchen'],room_dict['conservatory']]], GuideTut.unlock_conservatory_tut)
+  guides_dict['tutorial'].addEventListener(['room', 'unlock_s'], [ room_dict['kitchen'] ,container_dict['safe_kitchen']],                   GuideTut.unlock_safe_tut)
+
+def resetEvents():
+  guides_dict['tutorial'].orderedevents = []
 
     ## STARTUP ##
-
-guides_dict['tutorial'].detection = guides_dict['tutorial'].orderedevents[0][0]
-guides_dict['tutorial'].trigger = guides_dict['tutorial'].orderedevents[0][1]
-guides_dict['tutorial'].action = guides_dict['tutorial'].orderedevents[0][2]
+events()
 
 print('\n\n\nTo save your game at any point, type in `save` followed by a space and a file name.\nTo load a save, type in `load` and the file name.\nType in `load` with no file name to view all available saves.\n')
 
@@ -132,6 +132,7 @@ while player.playing == True:
     pickle.Pickler(f,2).dump(player)
     f.close()
   elif action[:5] == 'load ':
+    resetEvents()
     f = open('saves/' + action[5:].strip() + '/room_dict','rb')
     pickle.load(f)
     f.close()
@@ -147,6 +148,7 @@ while player.playing == True:
     f = open('saves/' + action[5:].strip() + '/player','rb')
     player = pickle.load(f)
     f.close()
+    events()
   elif action[:4] == 'load':
     print('Available saves:')
     for x in os.listdir('saves/'):
