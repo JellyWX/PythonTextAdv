@@ -4,7 +4,7 @@
 ###How can I use it?
 Download the source from my GitHub (by downloading it from there you can confirm the download is secure and not harmful to your device). Enter the folder and find the file `main.py`. By editing this file, you can create the game. For more information read on.
 ###How can I run it?
-Execute the file `main.py` in its directory. There are 2 scripts provided, `execture.sh` and `execute.bat`. Both of these are for running it on Windows or Linux. If these files don't run, you may need to install python. **You need to use python 3 to run this application.**
+Execute the file `main.py` in its directory. There are 2 scripts provided, `execute.sh` and `execute.bat`. Both of these are for running it on Windows or Linux. If these files don't run, you may need to install python. **You need to use python 3 to run this application.**
 ###Can I mod it?
 **YES**. I would love you to mod it. If you make changes you think are good for efficiency (speed vs. file size) or cool additions/improvements, do add them to a fork of the repository and I will consider implementing them.
 ###What games are there made in this engine?

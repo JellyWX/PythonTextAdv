@@ -16,7 +16,11 @@ from npcs import Zombie
 
 from guides import GuideTut
 
-room_dict = { 
+from funcs import save
+from funcs import load
+from funcs import scanload
+
+room_dict = {
               'bedroom'       : Room.Room('bedroom'),
               'landing'       : Room.Room('landing'),
               'stairs'        : Room.Room('stairs'),
@@ -34,16 +38,16 @@ container_dict = {
                   'cupboards'     : Container.Container(room_dict['kitchen'],      'cupboards'),
                   'body'          : Container.Container(room_dict['kitchen'],      'corpse'),
                   'body_2'        : Container.Container(room_dict['conservatory'], 'corpse'),
-                  
+
                   'safe_kitchen'  : Safe.Safe(room_dict['kitchen'],                'safe', 256342),
                   'safe_bedroom'  : Safe.Safe(room_dict['bedroom'],                'bedroom safe', 'x')
                  }
 
-item_dict = {              
+item_dict = {
              'key_safe_bedroom'  : Key.Key(container_dict['safe_kitchen'], [container_dict['safe_bedroom']]),
              'key_kitchen'       : Key.Key(container_dict['shelf'], [room_dict['kitchen'], room_dict['hall']]),
              'key_conservatory'  : Key.Key(container_dict['table'], [room_dict['conservatory'], room_dict['kitchen']]),
-              
+
              'knife'             : Item.Item(room_dict['kitchen'], 'knife'),
              'knife_2'           : Item.Item(container_dict['body'], 'knife'),
              'note'              : Item.Item(container_dict['body'], 'note')
@@ -96,9 +100,6 @@ def events():
   guides_dict['tutorial'].addEventListener(['room', 'unlock_r'], [ room_dict['kitchen'] ,[room_dict['kitchen'],room_dict['conservatory']]], GuideTut.unlock_conservatory_tut)
   guides_dict['tutorial'].addEventListener(['room', 'unlock_s'], [ room_dict['kitchen'] ,container_dict['safe_kitchen']],                   GuideTut.unlock_safe_tut)
 
-def resetEvents():
-  guides_dict['tutorial'].orderedevents = []
-
     ## STARTUP ##
 events()
 
@@ -112,27 +113,14 @@ refreshGuides()
 while player.playing == True:
   action = input(' > ')
   if action[:5] == 'save ':
+    a = action[5:].strip()
+    root = 'saves/' + a + '/'
     try:
-      os.makedirs('saves/' + action[5:].strip())
+      os.makedirs(root)
     except:
       pass
-    f = open('saves/' + action[5:].strip() + '/room_dict','wb')
-    pickle.Pickler(f,2).dump(room_dict)
-    f.close()
-    f = open('saves/' + action[5:].strip() + '/container_dict','wb')
-    pickle.Pickler(f,2).dump(container_dict)
-    f.close()
-    f = open('saves/' + action[5:].strip() + '/item_dict','wb')
-    pickle.Pickler(f,2).dump(item_dict)
-    f.close()
-    f = open('saves/' + action[5:].strip() + '/guides_dict','wb')
-    pickle.Pickler(f,2).dump(guides_dict)
-    f.close()
-    f = open('saves/' + action[5:].strip() + '/player','wb')
-    pickle.Pickler(f,2).dump(player)
-    f.close()
+    saveGame(root)
   elif action[:5] == 'load ':
-    resetEvents()
     f = open('saves/' + action[5:].strip() + '/room_dict','rb')
     pickle.load(f)
     f.close()
@@ -148,11 +136,8 @@ while player.playing == True:
     f = open('saves/' + action[5:].strip() + '/player','rb')
     player = pickle.load(f)
     f.close()
-    events()
   elif action[:4] == 'load':
-    print('Available saves:')
-    for x in os.listdir('saves/'):
-      print(' - ' + str(x))
+    scanload.main()
   else:
     player.doAction(action)
   refreshGuides()

@@ -3,6 +3,7 @@ from items import Key
 
 class Safe(Container.Container):
   def __init__(self, r, n, p):
+    self.uid = n
     self.room = r
     self.name = n
     self.contents = []

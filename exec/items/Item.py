@@ -1,5 +1,6 @@
 class Item(object):
   def __init__(self, c, n):
+    self.uid = n
     self.container = c
     self.name = n
     self.orrname = n
