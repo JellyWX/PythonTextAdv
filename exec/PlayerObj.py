@@ -1,8 +1,11 @@
+import uuid
 from containers import Container
 from items import Key
 
 class PlayerObj(Container.Container):
   def __init__(self, r, h):
+    self.id = uuid.uuid4()
+
     self.room = r
     self.room.chars.append(self)
     self.health = h

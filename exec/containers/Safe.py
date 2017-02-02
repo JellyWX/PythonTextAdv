@@ -1,8 +1,11 @@
+import uuid
 from containers import Container
 from items import Key
 
 class Safe(Container.Container):
   def __init__(self, r, n, p):
+    self.id = uuid.uuid4()
+
     self.room = r
     self.name = n
     self.contents = []

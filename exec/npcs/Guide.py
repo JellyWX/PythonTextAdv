@@ -19,7 +19,6 @@ class Guide(object):
     self.orderedevents.append([l,s,c])
 
   def scanEventListener(self):
-    print(str(self.progress) + ',' + str(self.detection))
     self.checks = []
     try:
       self.detection = self.orderedevents[self.progress][0]
@@ -64,8 +63,6 @@ class Guide(object):
                   break
     if False in self.checks:
       pass
-      print(str(self.checks))
-      print(str(self.trigger))
     elif True in self.checks:
       self.action()
       self.progress += 1

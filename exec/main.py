@@ -16,7 +16,7 @@ from npcs import Zombie
 
 from guides import GuideTut
 
-room_dict = { 
+room_dict = {
               'bedroom'       : Room.Room('bedroom'),
               'landing'       : Room.Room('landing'),
               'stairs'        : Room.Room('stairs'),
@@ -34,16 +34,16 @@ container_dict = {
                   'cupboards'     : Container.Container(room_dict['kitchen'],      'cupboards'),
                   'body'          : Container.Container(room_dict['kitchen'],      'corpse'),
                   'body_2'        : Container.Container(room_dict['conservatory'], 'corpse'),
-                  
+
                   'safe_kitchen'  : Safe.Safe(room_dict['kitchen'],                'safe', 256342),
                   'safe_bedroom'  : Safe.Safe(room_dict['bedroom'],                'bedroom safe', 'x')
                  }
 
-item_dict = {              
+item_dict = {
              'key_safe_bedroom'  : Key.Key(container_dict['safe_kitchen'], [container_dict['safe_bedroom']]),
              'key_kitchen'       : Key.Key(container_dict['shelf'], [room_dict['kitchen'], room_dict['hall']]),
              'key_conservatory'  : Key.Key(container_dict['table'], [room_dict['conservatory'], room_dict['kitchen']]),
-              
+
              'knife'             : Item.Item(room_dict['kitchen'], 'knife'),
              'knife_2'           : Item.Item(container_dict['body'], 'knife'),
              'note'              : Item.Item(container_dict['body'], 'note')
@@ -88,6 +88,7 @@ guides_dict = {
               }
 
 def events():
+  guides_dict['tutorial'].tracking = player
   guides_dict['tutorial'].addEventListener(['room'],             [ room_dict['lounge'] ],                                                   GuideTut.room_lounge_tut)
   guides_dict['tutorial'].addEventListener(['room'],             [ room_dict['kitchen'] ],                                                  GuideTut.room_kitchen_tut)
   guides_dict['tutorial'].addEventListener(['room', 'inv'],      [ room_dict['kitchen'] , item_dict['knife']],                              GuideTut.inv_knife_tut)
@@ -142,11 +143,11 @@ while player.playing == True:
     f = open('saves/' + action[5:].strip() + '/item_dict','rb')
     item_dict = pickle.load(f)
     f.close()
-    f = open('saves/' + action[5:].strip() + '/guides_dict','rb')
-    guides_dict = pickle.load(f)
-    f.close()
     f = open('saves/' + action[5:].strip() + '/player','rb')
     player = pickle.load(f)
+    f.close()
+    f = open('saves/' + action[5:].strip() + '/guides_dict','rb')
+    guides_dict = pickle.load(f)
     f.close()
     events()
   elif action[:4] == 'load':
