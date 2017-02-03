@@ -87,6 +87,10 @@ guides_dict = {
                'tutorial' : Guide.Guide('Tutorial', player)
               }
 
+npcs_dict = {
+             'zombie' : Zombie.Zombie(room_dict['conservatory'],'Zombie',100)
+            }
+
 def events():
   guides_dict['tutorial'].tracking = player
   guides_dict['tutorial'].addEventListener(['room'],             [ room_dict['lounge'] ],                                                   GuideTut.room_lounge_tut)
@@ -107,6 +111,10 @@ print('\n\n\nTo save your game at any point, type in `save` followed by a space 
 
 def refreshGuides():
   guides_dict['tutorial'].scanEventListener()
+
+def refreshNpcs():
+  for i,j in npcs_dict.items():
+    j.move()
 
 refreshGuides()
 
@@ -129,6 +137,9 @@ while player.playing == True:
     f = open('saves/' + action[5:].strip() + '/guides_dict','wb')
     pickle.Pickler(f,2).dump(guides_dict)
     f.close()
+    f = open('saves/' + action[5:].strip() + '/npcs_dict','wb')
+    pickle.Pickler(f,2).dump(npcs_dict)
+    f.close()
     f = open('saves/' + action[5:].strip() + '/player','wb')
     pickle.Pickler(f,2).dump(player)
     f.close()
@@ -143,11 +154,14 @@ while player.playing == True:
     f = open('saves/' + action[5:].strip() + '/item_dict','rb')
     item_dict = pickle.load(f)
     f.close()
-    f = open('saves/' + action[5:].strip() + '/player','rb')
-    player = pickle.load(f)
-    f.close()
     f = open('saves/' + action[5:].strip() + '/guides_dict','rb')
     guides_dict = pickle.load(f)
+    f.close()
+    f = open('saves/' + action[5:].strip() + '/npcs_dict','wb')
+    npcs_dict = pickle.load(f)
+    f.close()
+    f = open('saves/' + action[5:].strip() + '/player','rb')
+    player = pickle.load(f)
     f.close()
     events()
   elif action[:4] == 'load':
@@ -157,5 +171,6 @@ while player.playing == True:
   else:
     player.doAction(action)
   refreshGuides()
+  refreshNpcs()
 
 exit('While loop fell through.')
