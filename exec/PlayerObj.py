@@ -11,6 +11,7 @@ class PlayerObj(Container.Container):
     self.health = h
     self.contents = []
     self.playing = True
+    self.weapon = weapon_dict['hands']
     print('N:new player object spawned in at ' + self.room.name)
 
   def unlock(self, r):
@@ -62,12 +63,17 @@ class PlayerObj(Container.Container):
           print('The room is locked. Unlock rooms using `> unlock <room>`')
         else:
           print(self.room.name + ' >> ' + i)
-          self.room.chars.remove(self)
+          self.room.contents.remove(self)
           self.room = x
-          self.room.chars.append(self)
+          self.room.contents.append(self)
         break
     else:
       print('Room name not found. Use `> rooms` to find rooms')
+
+  def attack(self, target):
+    for i in room.contents:
+      if isinstance(i,NonePlayerObject):
+        i.hurt(self,10)
 
   def doAction(self, a):
     a = a.strip()
@@ -174,6 +180,11 @@ class PlayerObj(Container.Container):
       a = a.strip()
       self.examine(a)
 
+    elif a[:7] == 'attack ':
+      a = a[6:]
+      a.strip()
+      self.attack(a)
+
     elif a in ['inventory', 'inv', 'i']:
       print('Inventory:')
       for x in self.contents:
@@ -187,3 +198,12 @@ class PlayerObj(Container.Container):
 
     else:
       print('Not recognised command. Try again')
+
+  def refresh(self):
+    if self.health < 1:
+      self.die()
+
+  def die(self):
+    print('GAMEOVER. You died.')
+    print('You can still load from your last save.')
+    self.playing = False

@@ -49,6 +49,12 @@ item_dict = {
              'note'              : Item.Item(container_dict['body'], 'note')
             }
 
+weapon_dict = {
+               'hands'  : Weapon.Weapon(None,15)
+               'knife'  : Weapon.Weapon([item_dict['knife'],item_dict['knife_2']])
+
+              }
+
 container_dict['shelf'].desc         = 'A set of white, wooden shelves.'
 container_dict['bed'].desc           = 'A bed with a mutilated mattress. All the springs and most of the stuffing has been stripped away.'
 container_dict['table'].desc         = 'An intact 4-legged dining table.'
@@ -91,6 +97,8 @@ npcs_dict = {
              'zombie' : Zombie.Zombie(room_dict['conservatory'],'Zombie',100)
             }
 
+npcs_dict['zombie'].dmg = 2
+
 def events():
   guides_dict['tutorial'].tracking = player
   guides_dict['tutorial'].addEventListener(['room'],             [ room_dict['lounge'] ],                                                   GuideTut.room_lounge_tut)
@@ -115,6 +123,9 @@ def refreshGuides():
 def refreshNpcs():
   for i,j in npcs_dict.items():
     j.move()
+
+def refreshPlayer():
+  player.refresh()
 
 refreshGuides()
 
