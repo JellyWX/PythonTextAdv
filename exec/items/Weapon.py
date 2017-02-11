@@ -1,6 +1,8 @@
 from items import Item
 
 class Weapon(Item.Item):
-  def __init__(self,item,damage):
-    self.inherits = [item]
-    self.dmg = damage
+  def postinit(self, dmg):
+    if isinstance(dmg,int):
+      self.dmg = dmg
+    else:
+      exit('Throw: Weapon damage must be an integer.')

@@ -7,11 +7,11 @@ class PlayerObj(Container.Container):
     self.id = uuid.uuid4()
 
     self.room = r
-    self.room.chars.append(self)
+    self.room.contents.append(self)
     self.health = h
     self.contents = []
     self.playing = True
-    self.weapon = weapon_dict['hands']
+    self.weapon = None
     print('N:new player object spawned in at ' + self.room.name)
 
   def unlock(self, r):
@@ -80,6 +80,7 @@ class PlayerObj(Container.Container):
     a = a.lower()
     if a.split(' > ')[0] == 'rooms':
       self.room.eval()
+      return False
 
     elif a[:3] == 'go ':
       a = a[2:]
@@ -145,6 +146,7 @@ class PlayerObj(Container.Container):
 
     elif a == 'scan':
       self.room.search()
+      return False
 
     elif a[:7] == 'search ':
       a = a[6:]
@@ -174,11 +176,13 @@ class PlayerObj(Container.Container):
       a = a[4:]
       a = a.strip()
       self.examine(a)
+      return False
 
     elif a[:8] == 'examine ':
       a = a[7:]
       a = a.strip()
       self.examine(a)
+      return False
 
     elif a[:7] == 'attack ':
       a = a[6:]
@@ -189,15 +193,20 @@ class PlayerObj(Container.Container):
       print('Inventory:')
       for x in self.contents:
         print(' - ' + x.name + ' ')
+      return False
 
     elif a in ['help', '?']:
       print('No help manual available currently')
+      return False
 
     elif a == 'exit':
       self.playing = False
 
     else:
       print('Not recognised command. Try again')
+      return False
+    
+    return True
 
   def refresh(self):
     if self.health < 1:

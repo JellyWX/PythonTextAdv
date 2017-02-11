@@ -9,6 +9,7 @@ from PlayerObj import PlayerObj
 
 from items import Item
 from items import Key
+from items import Weapon
 
 from npcs import Guide
 from npcs import NonePlayerObj
@@ -44,16 +45,10 @@ item_dict = {
              'key_kitchen'       : Key.Key(container_dict['shelf'], [room_dict['kitchen'], room_dict['hall']]),
              'key_conservatory'  : Key.Key(container_dict['table'], [room_dict['conservatory'], room_dict['kitchen']]),
 
-             'knife'             : Item.Item(room_dict['kitchen'], 'knife'),
-             'knife_2'           : Item.Item(container_dict['body'], 'knife'),
+             'knife'             : Weapon.Weapon(room_dict['kitchen'], 'knife', 15),
+             'knife_2'           : Weapon.Weapon(container_dict['body'], 'knife', 15),
              'note'              : Item.Item(container_dict['body'], 'note')
             }
-
-weapon_dict = {
-               'hands'  : Weapon.Weapon(None,15)
-               'knife'  : Weapon.Weapon([item_dict['knife'],item_dict['knife_2']])
-
-              }
 
 container_dict['shelf'].desc         = 'A set of white, wooden shelves.'
 container_dict['bed'].desc           = 'A bed with a mutilated mattress. All the springs and most of the stuffing has been stripped away.'
@@ -168,7 +163,7 @@ while player.playing == True:
     f = open('saves/' + action[5:].strip() + '/guides_dict','rb')
     guides_dict = pickle.load(f)
     f.close()
-    f = open('saves/' + action[5:].strip() + '/npcs_dict','wb')
+    f = open('saves/' + action[5:].strip() + '/npcs_dict','rb')
     npcs_dict = pickle.load(f)
     f.close()
     f = open('saves/' + action[5:].strip() + '/player','rb')
@@ -180,7 +175,10 @@ while player.playing == True:
     for x in os.listdir('saves/'):
       print(' - ' + str(x))
   else:
-    player.doAction(action)
+    while not player.doAction(action):
+      print('Since that was a light action, nothing moved')
+      action = input(' > ')
+      
   refreshGuides()
   refreshNpcs()
 

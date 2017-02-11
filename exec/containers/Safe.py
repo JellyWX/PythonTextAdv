@@ -3,18 +3,10 @@ from containers import Container
 from items import Key
 
 class Safe(Container.Container):
-  def __init__(self, r, n, p):
-    self.id = uuid.uuid4()
-
-    self.room = r
-    self.name = n
-    self.contents = []
+  def postinit(self, p):
     self.locked = True
     self.corr_pass = p
-    self.carriable = False
-    print('N:created container ' + self.name + ' with no contents at ' + self.room.name)
-    self.room.addContent(self)
-
+    
   def unlock(self, client):
     if client.room == self.room:
       if self.locked == True:

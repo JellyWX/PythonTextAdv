@@ -1,7 +1,7 @@
 import uuid
 
 class Container(object):
-  def __init__(self, r, n):
+  def __init__(self, r, n, posni=None):
     self.id = uuid.uuid4()
 
     self.room = r
@@ -12,6 +12,10 @@ class Container(object):
     self.carriable = False
     print('N:created container ' + self.name + ' with no contents at ' + self.room.name)
     self.room.addContent(self)
+    self.postinit(posni)
+    
+  def postinit(self,n):
+    pass
 
   def addContent(self, c):
     self.contents.append(c)
