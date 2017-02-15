@@ -19,10 +19,13 @@ class NonePlayerObj(Container.Container):
     else:
       self.room.contents.remove(self)
       self.room = r
-      self.room.contents.append(self)
+      try:
+        self.room.contents.append(self)
+      except:
+        print(self.name + ' has died to ' + self.damage_from[-1])
 
   def die(self):
-    self.moveRoom(room_dict['heaven'])
+    self.moveRoom(None)
 
   def hurt(self, doctor, dmg):
     self.damage_from.append(doctor)

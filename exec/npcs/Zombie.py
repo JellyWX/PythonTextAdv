@@ -9,10 +9,7 @@ class Zombie(NonePlayerObj.NonePlayerObj):
         print(self.name + ': ' + choice(['ARGH','EURGH','HRRGH','ArCK']))
         break
     else:
-      if choice([True,False]) == False:
-        pass
-      else:
-        self.moveRoom(choice(self.room.exits))
+      if choice([True,False]): self.moveRoom(choice(self.room.exits))
 
     if self.health < 1:
       self.die()
