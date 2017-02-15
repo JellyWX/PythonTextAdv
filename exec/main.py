@@ -89,7 +89,7 @@ guides_dict = {
               }
 
 npcs_dict = {
-             'zombie' : Zombie.Zombie(room_dict['conservatory'],'Zombie',100)
+             'zombie' : Zombie.Zombie(room_dict['conservatory'],'zombie',100)
             }
 
 npcs_dict['zombie'].dmg = 2
@@ -178,7 +178,7 @@ while player.playing == True:
     while not player.doAction(action):
       print('Since that was a light action, nothing moved')
       action = input(' > ')
-      
+
   refreshGuides()
   refreshNpcs()
 

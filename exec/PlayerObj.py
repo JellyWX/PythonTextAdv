@@ -1,6 +1,7 @@
 import uuid
 from containers import Container
 from items import Key
+from npcs import NonePlayerObj
 
 class PlayerObj(Container.Container):
   def __init__(self, r, h):
@@ -12,6 +13,7 @@ class PlayerObj(Container.Container):
     self.contents = []
     self.playing = True
     self.weapon = None
+    self.name = 'player'
     print('N:new player object spawned in at ' + self.room.name)
 
   def unlock(self, r):
@@ -71,9 +73,14 @@ class PlayerObj(Container.Container):
       print('Room name not found. Use `> rooms` to find rooms')
 
   def attack(self, target):
-    for i in room.contents:
-      if isinstance(i,NonePlayerObject):
+    print(target)
+    for i in self.room.contents:
+      if isinstance(i,NonePlayerObj.NonePlayerObj) and i.name == target:
         i.hurt(self,10)
+        print('Hurt ' + target + '!')
+        break
+    else:
+      print('NPC not found.')
 
   def doAction(self, a):
     a = a.strip()
@@ -92,6 +99,8 @@ class PlayerObj(Container.Container):
       a = ' ' + a + ' '
       done = False
       for y in self.room.contents:
+        if isinstance(y,PlayerObj) or isinstance(y,NonePlayerObj.NonePlayerObj):
+          continue
         try:
           if y.locked:
             continue
@@ -186,7 +195,7 @@ class PlayerObj(Container.Container):
 
     elif a[:7] == 'attack ':
       a = a[6:]
-      a.strip()
+      a = a.strip()
       self.attack(a)
 
     elif a in ['inventory', 'inv', 'i']:
@@ -205,7 +214,7 @@ class PlayerObj(Container.Container):
     else:
       print('Not recognised command. Try again')
       return False
-    
+
     return True
 
   def refresh(self):

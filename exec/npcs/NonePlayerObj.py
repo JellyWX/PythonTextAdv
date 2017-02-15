@@ -11,7 +11,7 @@ class NonePlayerObj(Container.Container):
     self.attack = dmg
     self.damage_from = []
     self.contents = []
-    self.room.chars.append(self)
+    self.room.contents.append(self)
 
   def moveRoom(self, r):
     if self.room in r.locked or r in self.room.locked:
