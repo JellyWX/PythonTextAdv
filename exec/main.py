@@ -89,9 +89,10 @@ guides_dict = {
               }
 
 npcs_dict = {
-             'zombie' : Zombie.Zombie(room_dict['conservatory'],'zombie',100)
+             'zombie' : Zombie.Zombie(room_dict['conservatory'],'zombie',80)
             }
 
+NonePlayerObj.NonePlayerObj.global_access_rooms['heaven'] = room_dict['heaven']
 npcs_dict['zombie'].dmg = 2
 
 def events():

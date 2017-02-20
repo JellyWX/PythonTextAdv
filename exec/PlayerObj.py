@@ -2,6 +2,7 @@ import uuid
 from containers import Container
 from items import Key
 from npcs import NonePlayerObj
+from items import Weapon
 
 class PlayerObj(Container.Container):
   def __init__(self, r, h):
@@ -14,6 +15,7 @@ class PlayerObj(Container.Container):
     self.playing = True
     self.weapon = [None, 1]
     self.name = 'player'
+    self.pass_bool = False
     print('N:new player object spawned in at ' + self.room.name)
 
   def unlock(self, r):
@@ -74,10 +76,9 @@ class PlayerObj(Container.Container):
       return False
 
   def attack(self, target):
-    print(target)
     for i in self.room.contents:
       if isinstance(i,NonePlayerObj.NonePlayerObj) and i.name == target:
-        i.hurt(self,10)
+        i.hurt(self,self.weapon[0].dmg*self.weapon[1])
         print('Hurt ' + target + '!')
         break
     else:
@@ -141,6 +142,7 @@ class PlayerObj(Container.Container):
         return False
 
   def doAction(self, a):
+    self.pass_bool = False
     a = a.strip()
     a = a.lower()
     if a.split(' > ')[0] == 'rooms':
@@ -201,11 +203,26 @@ class PlayerObj(Container.Container):
       a = a.strip()
       self.examine(a)
       return False
+      
+    elif a[:6] == 'equip ':
+      a = a[5:]
+      a = a.strip()
+      for i in self.contents:
+        if isinstance(i,Weapon.Weapon):
+          if i.name == a:
+            self.weapon[0].name = self.weapon[0].name[:len(a)-10]
+            self.weapon[0] = i
+            i.name += ' (equiped)'
 
     elif a[:7] == 'attack ':
       a = a[6:]
       a = a.strip()
       self.attack(a)
+
+    elif a == 'wait':
+      print(choice['You take a stance and let the world pass','You raise your ' + try: self.weapon[0].name except: 'fists'])
+      self.weapon[1] += 0.35
+      pass
 
     elif a in ['inventory', 'inv', 'i']:
       print('Inventory:')
@@ -216,10 +233,6 @@ class PlayerObj(Container.Container):
     elif a in ['help', '?']:
       print('No help manual available currently')
       return False
-
-    elif a == 'wait':
-      print('You take a stance and let the world pass for a moment...')
-      pass
 
     elif a == 'exit':
       self.playing = False
