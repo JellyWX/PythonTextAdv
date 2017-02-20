@@ -3,9 +3,10 @@ import uuid
 from random import choice
 
 from containers import Container
+from items import Item
 from items import Key
-from npcs import NonePlayerObj
 from items import Weapon
+from npcs import NonePlayerObj
 
 class PlayerObj(Container.Container):
   def __init__(self, r, h):
@@ -113,7 +114,7 @@ class PlayerObj(Container.Container):
       except:
         pass
       if (' ' + y.name + ' ') in a: #Finds if the room object is in the user's input
-        try:
+        if isinstance(y,Container.Container):
           for x in y.contents:
             if (' ' + x.name + ' ') in a:
               if x.carriable:
@@ -130,11 +131,8 @@ class PlayerObj(Container.Container):
                 break
               else:
                 print('Error: Item specified cannot be carried.')
-        except:
-          pass
-    else:
-      for x in self.room.contents:
-        if (' ' + x.name + ' ') == a:
+              break
+        elif isinstance(y,Item.Item):
           if x.carriable:
             x.move(self)
             i = 1
@@ -150,8 +148,9 @@ class PlayerObj(Container.Container):
             break
           else:
             print('Error: Item specified cannot be carried.')
-      else:
-        print('Error: Couldn\'t find item stated in room or container.')
+        else:
+          print('Error: Object of type ' + type(y) + ' cannot be carried or searched.')
+
 
   def doAction(self, a):
     self.pass_bool = False
