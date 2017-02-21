@@ -87,6 +87,7 @@ class PlayerObj(Container.Container):
           self.room.contents.remove(self)
           self.room = x
           self.room.contents.append(self)
+          self.weapon[1] = 1
           self.pass_bool = True
         break
     else:
@@ -95,14 +96,18 @@ class PlayerObj(Container.Container):
   def attack(self, target):
     for i in self.room.contents:
       if isinstance(i,NonePlayerObj.NonePlayerObj) and i.name == target:
-        i.hurt(self,self.weapon[0].dmg*self.weapon[1])
+        try:
+          i.hurt(self,self.weapon[0].dmg*self.weapon[1])
+        except:
+          i.hurt(self,6*self.weapon[1])
         print('Hurt ' + target + '!')
+        self.weapon[1] = 1
+        self.pass_bool = True
         break
     else:
       print('NPC not found.')
 
   def take(self,a):
-    done = False
     for y in self.room.contents:
 
       if isinstance(y,PlayerObj) or isinstance(y,NonePlayerObj.NonePlayerObj):
@@ -119,6 +124,7 @@ class PlayerObj(Container.Container):
             if (' ' + x.name + ' ') in a:
               if x.carriable:
                 x.move(self)
+                self.weapon[1] = 1
                 i = 1
                 for z in self.contents:
                   if z != x:
@@ -132,9 +138,12 @@ class PlayerObj(Container.Container):
               else:
                 print('Error: Item specified cannot be carried.')
               break
+          else:
+            print('Error: Item specified could not be found inside container.')
         elif isinstance(y,Item.Item):
           if y.carriable:
             y.move(self)
+            self.weapon[1] = 1
             i = 1
             for z in self.contents:
               if z != y:
@@ -149,7 +158,9 @@ class PlayerObj(Container.Container):
             print('Error: Item specified cannot be carried.')
         else:
           print('Error: Object of type ' + type(y) + ' cannot be carried or searched.')
-
+        break
+    else:
+      print('Error: Couldn\'t find object specified.')
 
   def doAction(self, a):
     self.pass_bool = False
@@ -236,7 +247,6 @@ class PlayerObj(Container.Container):
       a = a[6:]
       a = a.strip()
       self.attack(a)
-      self.pass_bool = True
 
     elif a == 'wait':
       print(choice(['You take a stance and let the world pass','You raise your hands and stance']) + '...') #TODO Add more messages to this choice

@@ -3,6 +3,7 @@ import uuid
 
 class NonePlayerObj(Container.Container):
   global_access_rooms = {}
+  global_access_variables = {}
   def __init__(self, r, n, h, dmg=0):
     self.id = uuid.uuid4()
 
@@ -21,10 +22,17 @@ class NonePlayerObj(Container.Container):
       self.room.contents.remove(self)
       self.room = r
       self.room.contents.append(self)
-      print(self.name + ' has died to ' + self.damage_from[-1])
+
+  def predeath(self):
+    pass
+  def postdeath(self):
+    pass
 
   def die(self):
-    self.moveRoom(global_access_rooms['heaven'])
+    self.predeath()
+    print(self.name + ' has died to ' + self.damage_from[-1].name)
+    self.moveRoom(self.global_access_rooms['heaven'])
+    self.postdeath()
 
   def hurt(self, doctor, dmg):
     self.damage_from.append(doctor)
