@@ -133,15 +133,14 @@ class PlayerObj(Container.Container):
                 print('Error: Item specified cannot be carried.')
               break
         elif isinstance(y,Item.Item):
-          if x.carriable:
-            x.move(self)
+          if y.carriable:
+            y.move(self)
             i = 1
-            j = x.name
             for z in self.contents:
-              if z != x:
-                if z.name == x.name:
-                  while z.name == x.name:
-                    x.name = j + ' (' + str(i) + ')'
+              if z != y:
+                if z.name == y.name:
+                  while z.name == y.name:
+                    y.name = y.orrname + ' (' + str(i) + ')'
                     i += 1
             print('Collected item')
             self.pass_bool = True
