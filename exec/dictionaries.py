@@ -90,3 +90,5 @@ guides_dict = {
 npcs_dict = {
   'zombie' : Zombie.Zombie(room_dict['conservatory'],'zombie',80)
 }
+
+npcs_dict['zombie'].dmg = 2
