@@ -29,10 +29,16 @@ class NonePlayerObj(Container.Container):
     pass
 
   def die(self):
-    self.predeath()
-    print(self.name + ' has died to ' + self.damage_from[-1].name)
-    self.moveRoom(self.global_access_rooms['heaven'])
-    self.postdeath()
+    if self.room != self.global_access_rooms['heaven']:
+      self.predeath()
+      print(self.name + ' has died to ' + self.damage_from[-1].name)
+      self.moveRoom(self.global_access_rooms['heaven'])
+
+      for i,j in self.global_access_variables['npcs_dict'].items():
+        if j == self:
+          del(self.global_access_variables['npcs_dict'][i])
+          break
+      self.postdeath()
 
   def hurt(self, doctor, dmg):
     self.damage_from.append(doctor)

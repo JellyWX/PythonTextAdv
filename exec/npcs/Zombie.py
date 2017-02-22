@@ -5,7 +5,7 @@ from containers import Container
 
 class Zombie(NonePlayerObj.NonePlayerObj):
   def move(self):
-    if self.health < 1:
+    if self.health < 1 and self.room != self.global_access_rooms['heaven']:
       self.die()
     else:
       for x in self.room.contents:

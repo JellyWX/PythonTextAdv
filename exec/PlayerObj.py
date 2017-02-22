@@ -236,7 +236,10 @@ class PlayerObj(Container.Container):
       for i in self.contents:
         if isinstance(i,Weapon.Weapon):
           if i.name == a:
-            self.weapon[0].name = self.weapon[0].name[:len(a)-10]
+            try:
+              self.weapon[0].name = self.weapon[0].name[:len(a)-10]
+            except:
+              pass
             self.weapon[0] = i
             i.name += ' (equiped)'
             break

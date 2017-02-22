@@ -93,6 +93,8 @@ npcs_dict = {
             }
 
 NonePlayerObj.NonePlayerObj.global_access_rooms['heaven'] = room_dict['heaven']
+NonePlayerObj.NonePlayerObj.global_access_variables['npcs_dict'] = npcs_dict
+
 npcs_dict['zombie'].dmg = 2
 
 def events():
@@ -117,8 +119,14 @@ def refreshGuides():
   guides_dict['tutorial'].scanEventListener()
 
 def refreshNpcs():
-  for i,j in npcs_dict.items():
-    j.move()
+  npcs_done = False
+  while not npcs_done:
+    try:
+      for i,j in npcs_dict.items():
+        j.move()
+      npcs_done = True
+    except:
+      npcs_done = False
 
 def refreshPlayer():
   player.refresh()
