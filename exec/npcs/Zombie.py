@@ -11,7 +11,7 @@ class Zombie(NonePlayerObj.NonePlayerObj):
       self.die()
     else:
       for x in self.room.contents:
-        if type(x) == PlayerObj:
+        if isinstance(x,PlayerObj):
           print(self.name + ': ' + choice(['ARGH','EURGH','HRRGH','ArCK']))
           break
       else:

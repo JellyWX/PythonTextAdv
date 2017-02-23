@@ -17,12 +17,7 @@ class Room(Container.Container):
   def eval(self):
     print('Room ' + self.name + ' leads to:')
     for x in self.exits:
-      print(' - ' + x.name + ' ')
-
-  def addExit(self, e):
-    self.exits.append(e)
-    if not(self in e.exits):
-      e.addExit(self)
+      print(' - ' + x.name(self) + ' ')
 
   def search(self):
     print('Room contents:')
@@ -31,3 +26,33 @@ class Room(Container.Container):
         print(' - ' + x.name + ' (unlocked) ')
       else:
         print(' - ' + x.name + ' ')
+
+class Exit(object):
+  def __init__(self,r1,r2,locked):
+    r1.exits.append(self)
+    r2.exits.append(self)
+
+    self.rooms = (r1,r2)
+    self.locked = locked
+
+  def use(self,user,live=False):
+    if not self.locked:
+      if user.room == self.rooms[0]:
+        user.room.contents.remove(user)
+        user.room = self.rooms[1]
+        user.room.contents.append(user)
+      else:
+        user.room.contents.remove(user)
+        user.room = self.rooms[0]
+        user.room.contents.append(user)
+      return True
+    else:
+      if live:
+        print('Error:Connection locked. You must find a way to unlock it first.')
+      return False
+
+  def name(self,user):
+    if user.room == self.rooms[0]:
+      return self.rooms[1].name
+    else:
+      return self.rooms[0].name

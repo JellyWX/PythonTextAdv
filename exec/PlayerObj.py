@@ -22,19 +22,31 @@ class PlayerObj(Container.Container):
     self.pass_bool = False
     print('N:new player object spawned in at ' + self.room.name)
 
-  def unlock(self, r):
-    if (self.room in r.locked) or (r in self.room.locked):
-      for i in self.contents:
-        if type(i) == Key.Key:
-          if (self.room in i.unlocks) and (r in i.unlocks):
-            try:
-              r.locked.remove(self.room)
-            except:
-              self.room.locked.remove(r)
-            i.name = i.orrname + ' (' + r.name + ')'
-            print('Room unlocked')
+  def unlock(self, a):
+    for x in self.room.exits:
+      if x.name(self) == a:
+        if x.locked:
+          for y in self.contents:
+            if isinstance(y,Key.Key):
+              x.locked = False
+              y.name = y.orrname + ' (' + x.name(self) + ')'
+              print('Room unlocked.')
+              self.pass_bool = True
+              break
+        else:
+          print('Error:Room not locked.')
     else:
-      print('Room not locked')
+      for x in self.room.contents:
+        if x.name == a:
+          if isinstance(x,Safe.Safe):
+            if x.locked:
+              for y in self.contents:
+                if isinstance(y,Key.Key):
+                  x.locked = False
+                  y.name = y.orrname + ' (' + x.name + ')'
+                  print('Container unlocked.')
+                  self.pass_bool = True
+                  break
 
   def examine(self, i):
     done = False
@@ -73,22 +85,13 @@ class PlayerObj(Container.Container):
       else:
         print('Couldn\'t find item/container. Use `inv` and `scan` to view inventory and room contents.')
 
-  def moveRoom(self, i):
+  def moveRoom(self, a):
     for x in self.room.exits:
-      if x.name.lower() == i:
-        if self.room in x.locked:
-          print('The connection is locked. Unlock rooms using `> unlock <room>`')
-        elif x in self.room.locked:
-          print('The connection is locked. Unlock rooms using `> unlock <room>`')
-        elif True in x.locked:
-          print('The room is locked. Unlock rooms using `> unlock <room>`')
-        else:
-          print(self.room.name + ' >> ' + i)
-          self.room.contents.remove(self)
-          self.room = x
-          self.room.contents.append(self)
-          self.weapon[1] = 1
-          self.pass_bool = True
+      if x.name(self).lower() == a:
+        old = self.room
+        if x.use(self,True):
+          print(old.name + ' >> ' + self.room.name)
+        self.pass_bool = True
         break
     else:
       print('Room name not found. Use `> rooms` to find rooms')
@@ -203,20 +206,7 @@ class PlayerObj(Container.Container):
     elif a[:7] == 'unlock ':
       a = a[6:]
       a = a.strip()
-      done = False
-      for x in self.room.exits:
-        if x.name == a:
-          self.unlock(x)
-          self.pass_bool = True
-          break
-      else:
-        for x in self.room.contents:
-          if x.name == a:
-            x.unlock(self)
-            self.pass_bool = True
-            break
-        else:
-          print('Error: Couldn\'t find a container or exit by that name in the current room.')
+      self.unlock(a)
 
     elif a[:5] == 'look ':
       a = a[4:]

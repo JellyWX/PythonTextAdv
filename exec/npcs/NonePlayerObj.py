@@ -16,12 +16,10 @@ class NonePlayerObj(Container.Container):
     self.room.contents.append(self)
 
   def moveRoom(self, r):
-    if self.room in r.locked or r in self.room.locked:
+    if r.locked:
       pass
     else:
-      self.room.contents.remove(self)
-      self.room = r
-      self.room.contents.append(self)
+      r.use(self)
 
   def predeath(self):
     pass
@@ -32,7 +30,9 @@ class NonePlayerObj(Container.Container):
     if self.room != self.global_access_rooms['heaven']:
       self.predeath()
       print(self.name + ' has died to ' + self.damage_from[-1].name)
-      self.moveRoom(self.global_access_rooms['heaven'])
+      self.room.contents.remove(self)
+      self.room = self.global_access_rooms['heaven']
+      self.room.contents.append(self)
 
       for i,j in self.global_access_variables['npcs_dict'].items():
         if j == self:

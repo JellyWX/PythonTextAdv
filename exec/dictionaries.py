@@ -17,7 +17,6 @@ from PlayerObj import PlayerObj
 
 room_dict = {
   'bedroom'       : Room.Room('bedroom'),
-  'landing'       : Room.Room('landing'),
   'stairs'        : Room.Room('stairs'),
   'hall'          : Room.Room('hall'),
   'lounge'        : Room.Room('lounge'),
@@ -38,10 +37,19 @@ container_dict = {
   'safe_bedroom'  : Safe.Safe(room_dict['bedroom'],                'bedroom safe', 'x')
 }
 
+exit_dict = {
+  'bed-stairs' : Room.Exit(room_dict['bedroom'],room_dict['stairs'],False),
+  'hall-stairs' : Room.Exit(room_dict['hall'],room_dict['stairs'],False),
+  'hall-kitchen' : Room.Exit(room_dict['hall'],room_dict['kitchen'],True),
+  'hall-lounge' : Room.Exit(room_dict['hall'],room_dict['lounge'],False),
+  'lounge-kitchen' : Room.Exit(room_dict['kitchen'],room_dict['lounge'],False),
+  'kitchen-conservatory' : Room.Exit(room_dict['kitchen'],room_dict['conservatory'],True)
+}
+
 item_dict = {
-  'key_safe_bedroom'  : Key.Key(container_dict['safe_kitchen'], [container_dict['safe_bedroom']]),
-  'key_kitchen'       : Key.Key(container_dict['shelf'], [room_dict['kitchen'], room_dict['hall']]),
-  'key_conservatory'  : Key.Key(container_dict['table'], [room_dict['conservatory'], room_dict['kitchen']]),
+  'key_safe_bedroom'  : Key.Key(container_dict['safe_kitchen'], container_dict['safe_bedroom']),
+  'key_kitchen'       : Key.Key(container_dict['shelf'], exit_dict['hall-kitchen']),
+  'key_conservatory'  : Key.Key(container_dict['table'], exit_dict['kitchen-conservatory']),
 
   'knife'             : Weapon.Weapon(room_dict['kitchen'], 'knife', 15),
   'knife_2'           : Weapon.Weapon(container_dict['body'], 'knife', 15),
@@ -64,22 +72,6 @@ item_dict['key_conservatory'].desc  = 'A small key but too small to be for an ex
 item_dict['knife'].desc             = 'A sharp blade covered in blood.'
 item_dict['knife_2'].desc           = 'A sharp blade covered in blood.'
 item_dict['note'].desc              = 'A crumpled piece of paper with `256342` written on it.'
-
-room_dict['bedroom'].addExit(room_dict['landing'])
-
-room_dict['landing'].addExit(room_dict['stairs'])
-
-room_dict['stairs'].addExit(room_dict['hall'])
-
-room_dict['hall'].addExit(room_dict['kitchen'])
-room_dict['hall'].addExit(room_dict['lounge'])
-
-room_dict['lounge'].addExit(room_dict['kitchen'])
-
-room_dict['kitchen'].addExit(room_dict['conservatory'])
-room_dict['kitchen'].locked = [room_dict['hall']]
-
-room_dict['conservatory'].locked = [room_dict['kitchen']]
 
 player = PlayerObj(room_dict['lounge'], 100)
 
