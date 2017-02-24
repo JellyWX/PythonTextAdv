@@ -16,10 +16,11 @@ def events():
   guides_dict['tutorial'].addEventListener(['room'],             [ room_dict['lounge'] ],                                                   GuideTut.room_lounge_tut)
   guides_dict['tutorial'].addEventListener(['room'],             [ room_dict['kitchen'] ],                                                  GuideTut.room_kitchen_tut)
   guides_dict['tutorial'].addEventListener(['room', 'inv'],      [ room_dict['kitchen'] , item_dict['knife']],                              GuideTut.inv_knife_tut)
+  guides_dict['tutorial'].addEventListener(['room', 'command'],  [ room_dict['kitchen'] , ':inv'],                                          GuideTut.inv_tut)
   guides_dict['tutorial'].addEventListener(['room', 'inv'],      [ room_dict['kitchen'] , item_dict['note']],                               GuideTut.inv_note_tut)
   guides_dict['tutorial'].addEventListener(['room', 'inv'],      [ room_dict['kitchen'] , item_dict['key_conservatory']],                   GuideTut.inv_key_tut)
-  guides_dict['tutorial'].addEventListener(['room', 'unlock_r'], [ room_dict['kitchen'] ,[room_dict['kitchen'],room_dict['conservatory']]], GuideTut.unlock_conservatory_tut)
-  guides_dict['tutorial'].addEventListener(['room', 'unlock_s'], [ room_dict['kitchen'] ,container_dict['safe_kitchen']],                   GuideTut.unlock_safe_tut)
+  guides_dict['tutorial'].addEventListener(['room', 'unlock_r'], [ room_dict['kitchen'] , exit_dict['kitchen-conservatory']],               GuideTut.unlock_conservatory_tut)
+  guides_dict['tutorial'].addEventListener(['room', 'unlock_s'], [ room_dict['kitchen'] , container_dict['safe_kitchen']],                  GuideTut.unlock_safe_tut)
 
 def resetEvents():
   guides_dict['tutorial'].orderedevents = []
@@ -29,8 +30,8 @@ events()
 
 print('\n\n\nTo save your game at any point, type in `save` followed by a space and a file name.\nTo load a save, type in `load` and the file name.\nType in `load` with no file name to view all available saves.\n')
 
-def refreshGuides():
-  guides_dict['tutorial'].scanEventListener()
+def refreshGuides(a):
+  guides_dict['tutorial'].scanEventListener(a)
 
 def refreshNpcs():
   npcs_done = False
@@ -45,12 +46,14 @@ def refreshNpcs():
 def refreshPlayer():
   player.refresh()
 
-refreshGuides()
+refreshGuides(None)
 
 while player.playing == True:
   action = input(' > ')
   while not player.doAction(action):
     print('Since that was a light action, nothing moved')
+
+    refreshGuides(action)
 
     if action[:5] == 'save ':
       try:
@@ -111,7 +114,7 @@ while player.playing == True:
 
     action = input(' > ')
 
-  refreshGuides()
+  refreshGuides(action)
   refreshNpcs()
 
 exit('While loop fell through.')

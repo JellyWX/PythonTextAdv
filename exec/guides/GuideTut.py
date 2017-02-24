@@ -5,7 +5,10 @@ def room_kitchen_tut():
   print('Use the command \'scan\' to view objects in the room.\nUse the command \'take\' to pick up a stray item')
 
 def inv_knife_tut():
-  print('Great! You can use the \'inv\' command to view what items you\'re carrying.\nHowever, sometimes an item may be located inside a container. Use \'search <container>\' and \'take <container> <item>\' to collect the note from the corpse')
+  print('Great! You can use the \'inv\' command to view what items you\'re carrying.')
+
+def inv_tut():
+  print('\nHowever, sometimes an item may be located inside a container. Use \'search <container>\' and \'take <container> <item>\' to collect the note from the corpse')
 
 def inv_note_tut():
   print('Nice! You can use the \'look <item or container>\' command to examine objects. Have a look at some of the things in the room and your inventory. Once you\'ve done that, try and find another key.')

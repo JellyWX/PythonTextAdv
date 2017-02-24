@@ -20,7 +20,13 @@ class PlayerObj(Container.Container):
     self.weapon = [None, 1]
     self.name = 'player'
     self.pass_bool = False
+    self.damage_from = []
     print('N:new player object spawned in at ' + self.room.name)
+
+  def hurt(self, doctor, dmg):
+    self.damage_from.append(doctor)
+    self.health -= dmg
+    print(doctor.name + ' hit you for ' + str(dmg) + ' damage!')
 
   def unlock(self, a):
     for x in self.room.exits:
@@ -252,7 +258,7 @@ class PlayerObj(Container.Container):
         print(' - ' + x.name + ' ')
 
     elif a in ['help', '?']:
-      print('Error: No help manual available currently')
+      print('Error:No help manual available currently')
 
     elif a == 'exit':
       self.playing = False

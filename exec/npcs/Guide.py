@@ -18,7 +18,7 @@ class Guide(object):
   def addEventListener(self, l, s, c):
     self.orderedevents.append([l,s,c])
 
-  def scanEventListener(self):
+  def scanEventListener(self, a):
     self.checks = []
     try:
       self.detection = self.orderedevents[self.progress][0]
@@ -54,9 +54,17 @@ class Guide(object):
                 break
     if 'unlock_r' in self.detection:
       for x in self.trigger:
-        if type(x) == list:
-          if type(x[0]) == Room.Room:
-            if (x[0] not in x[1].locked) and (x[1] not in x[0].locked):
+        if type(x) == Room.Exit:
+          if not x.locked:
+            for y in range(0,len(self.checks)):
+              if self.checks[y] == False:
+                self.checks[y] = True
+                break
+    if 'command' in self.detection:
+      for x in self.trigger:
+        if isinstance(x, str):
+          if x[0] == ':':
+            if x[1:] == a:
               for y in range(0,len(self.checks)):
                 if self.checks[y] == False:
                   self.checks[y] = True
