@@ -11,13 +11,13 @@ NonePlayerObj.NonePlayerObj.global_access_rooms['heaven'] = room_dict['heaven']
 NonePlayerObj.NonePlayerObj.global_access_variables['npcs_dict'] = npcs_dict
 NonePlayerObj.NonePlayerObj.global_access_variables['container_dict'] = container_dict
 
-    ## STARTUP ##
 events()
 
 print('\n\n\nTo save your game at any point, type in `save` followed by a space and a file name.\nTo load a save, type in `load` and the file name.\nType in `load` with no file name to view all available saves.\n')
 
 def refreshGuides(a):
-  guides_dict['tutorial'].scanEventListener(a)
+  for i,j in guides_dict.items():
+    j.scanEventListener(a)
 
 def refreshNpcs():
   npcs_done = False
