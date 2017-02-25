@@ -84,3 +84,17 @@ npcs_dict = {
 }
 
 npcs_dict['zombie'].dmg = 2
+
+def events():
+  guides_dict['tutorial'].tracking = player
+  guides_dict['tutorial'].addEventListener(['room'],             [ room_dict['lounge'] ],                                                   GuideTut.room_lounge_tut)
+  guides_dict['tutorial'].addEventListener(['room'],             [ room_dict['kitchen'] ],                                                  GuideTut.room_kitchen_tut)
+  guides_dict['tutorial'].addEventListener(['room', 'inv'],      [ room_dict['kitchen'] , item_dict['knife']],                              GuideTut.inv_knife_tut)
+  guides_dict['tutorial'].addEventListener(['room', 'command'],  [ room_dict['kitchen'] , ':inv'],                                          GuideTut.inv_tut)
+  guides_dict['tutorial'].addEventListener(['room', 'inv'],      [ room_dict['kitchen'] , item_dict['note']],                               GuideTut.inv_note_tut)
+  guides_dict['tutorial'].addEventListener(['room', 'inv'],      [ room_dict['kitchen'] , item_dict['key_conservatory']],                   GuideTut.inv_key_tut)
+  guides_dict['tutorial'].addEventListener(['room', 'unlock_r'], [ room_dict['kitchen'] , exit_dict['kitchen-conservatory']],               GuideTut.unlock_conservatory_tut)
+  guides_dict['tutorial'].addEventListener(['room', 'unlock_s'], [ room_dict['kitchen'] , container_dict['safe_kitchen']],                  GuideTut.unlock_safe_tut)
+
+def resetEvents():
+  guides_dict['tutorial'].orderedevents = []
