@@ -29,6 +29,8 @@ class Room(Container.Container):
 
 class Exit(object):
   def __init__(self,r1,r2,locked):
+    self.id = uuid.uuid4()
+
     r1.exits.append(self)
     r2.exits.append(self)
 
@@ -56,3 +58,9 @@ class Exit(object):
       return self.rooms[1].name
     else:
       return self.rooms[0].name
+
+  def __eq__(self,com):
+    return isinstance(com,type(self)) and com.id == self.id
+
+  def __hash__(self):
+    return hash(self.id)

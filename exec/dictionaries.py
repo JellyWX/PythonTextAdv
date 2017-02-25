@@ -47,9 +47,9 @@ exit_dict = {
 }
 
 item_dict = {
-  'key_safe_bedroom'  : Key.Key(container_dict['safe_kitchen'], container_dict['safe_bedroom']),
-  'key_kitchen'       : Key.Key(container_dict['shelf'], exit_dict['hall-kitchen']),
-  'key_conservatory'  : Key.Key(container_dict['table'], exit_dict['kitchen-conservatory']),
+  'key_safe_bedroom'  : Key.Key(container_dict['safe_kitchen'], 'key', container_dict['safe_bedroom']),
+  'key_kitchen'       : Key.Key(container_dict['shelf'], 'key', exit_dict['hall-kitchen']),
+  'key_conservatory'  : Key.Key(container_dict['table'], 'key', exit_dict['kitchen-conservatory']),
 
   'knife'             : Weapon.Weapon(room_dict['kitchen'], 'knife', 15),
   'knife_2'           : Weapon.Weapon(container_dict['body'], 'knife', 15),
