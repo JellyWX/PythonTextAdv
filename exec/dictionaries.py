@@ -33,8 +33,8 @@ container_dict = {
   'body'          : Container.Container(room_dict['kitchen'],      'corpse'),
   'body_2'        : Container.Container(room_dict['conservatory'], 'corpse'),
 
-  'safe_kitchen'  : Safe.Safe(room_dict['kitchen'],                'safe', 256342),
-  'safe_bedroom'  : Safe.Safe(room_dict['bedroom'],                'bedroom safe', 'x')
+  'safe_kitchen'  : Safe.Safe(room_dict['kitchen'],                'safe', '256342'),
+  'safe_bedroom'  : Safe.Safe(room_dict['bedroom'],                'bedroom safe', None)
 }
 
 exit_dict = {

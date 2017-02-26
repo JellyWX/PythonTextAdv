@@ -100,12 +100,8 @@ while player.playing == True:
         print(' - ' + str(x))
 
     action = input(' > ')
-    print(guides_dict['tutorial'].tracking)
-    print(player)
-    print(guides_dict['tutorial'].tracking.room)
-    print(player.room)
     print(guides_dict['tutorial'].trigger)
-    print(player.contents)
+    print(player.room.exits)
 
   refreshGuides(action)
   refreshNpcs()

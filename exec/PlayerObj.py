@@ -3,6 +3,7 @@ import uuid
 from random import choice
 
 from containers import Container
+from containers import Safe
 from items import Item
 from items import Key
 from items import Weapon
@@ -34,11 +35,13 @@ class PlayerObj(Container.Container):
         if x.locked:
           for y in self.contents:
             if isinstance(y,Key.Key):
-              x.locked = False
-              y.name = y.orrname + ' (' + x.name(self) + ')'
-              print('Room unlocked.')
-              self.pass_bool = True
-              break
+              if y.unlocks == x:
+                x.locked = False
+                y.name = y.orrname + ' (' + x.name(self) + ')'
+                print('Room unlocked.')
+                self.pass_bool = True
+                break
+          break
         else:
           print('Error:Room not locked.')
     else:
@@ -46,13 +49,27 @@ class PlayerObj(Container.Container):
         if x.name == a:
           if isinstance(x,Safe.Safe):
             if x.locked:
-              for y in self.contents:
-                if isinstance(y,Key.Key):
-                  x.locked = False
-                  y.name = y.orrname + ' (' + x.name + ')'
-                  print('Container unlocked.')
-                  self.pass_bool = True
-                  break
+              self.pass_bool = True
+              if x.corr_pass != None:
+                usr_pass = 0
+                while usr_pass != 'exit':
+                  usr_pass = input('Enter a password (enter exit to cancel): ')
+                  if usr_pass == x.corr_pass:
+                    x.locked = False
+                    x.name += ' (unlocked)'
+                    print('Container unlocked.')
+                    break
+                  else:
+                    print('Incorrect password. Try again')
+              else:
+                for y in self.contents:
+                  if isinstance(y,Key.Key):
+                    if y.unlocks == x:
+                      x.locked = False
+                      y.name = y.orrname + ' (' + x.name + ')'
+                      x.name += ' (unlocked)'
+                      print('Container unlocked.')
+                      break
 
   def examine(self, i):
     done = False

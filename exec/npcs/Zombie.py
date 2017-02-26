@@ -13,7 +13,7 @@ class Zombie(NonePlayerObj.NonePlayerObj):
       for x in self.room.contents:
         if isinstance(x,PlayerObj):
           print(self.name + ': ' + choice(['ARGH','EURGH','HRRGH','ArCK']))
-          x.hurt(self.dmg)
+          x.hurt(self,self.dmg)
           break
       else:
         if choice([True,False]): self.moveRoom(choice(self.room.exits))
