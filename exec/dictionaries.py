@@ -38,12 +38,12 @@ container_dict = {
 }
 
 exit_dict = {
-  'bed-stairs' : Room.Exit(room_dict['bedroom'],room_dict['stairs'],False),
-  'hall-stairs' : Room.Exit(room_dict['hall'],room_dict['stairs'],False),
-  'hall-kitchen' : Room.Exit(room_dict['hall'],room_dict['kitchen'],True),
-  'hall-lounge' : Room.Exit(room_dict['hall'],room_dict['lounge'],False),
-  'lounge-kitchen' : Room.Exit(room_dict['kitchen'],room_dict['lounge'],False),
-  'kitchen-conservatory' : Room.Exit(room_dict['kitchen'],room_dict['conservatory'],True)
+  'bed-stairs'            : Room.Exit(room_dict['bedroom'],room_dict['stairs'],False),
+  'hall-stairs'           : Room.Exit(room_dict['hall'],room_dict['stairs'],False),
+  'hall-kitchen'          : Room.Exit(room_dict['hall'],room_dict['kitchen'],True),
+  'hall-lounge'           : Room.Exit(room_dict['hall'],room_dict['lounge'],False),
+  'lounge-kitchen'        : Room.Exit(room_dict['kitchen'],room_dict['lounge'],False),
+  'kitchen-conservatory'  : Room.Exit(room_dict['kitchen'],room_dict['conservatory'],True)
 }
 
 item_dict = {
@@ -78,6 +78,8 @@ player = PlayerObj(room_dict['lounge'], 100)
 guides_dict = {
   'tutorial' : Guide.Guide('Tutorial', player)
 }
+
+player.guides = guides_dict
 
 npcs_dict = {
   'zombie' : Zombie.Zombie(room_dict['conservatory'],'zombie',80)

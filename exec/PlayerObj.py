@@ -23,6 +23,7 @@ class PlayerObj(Container.Container):
     self.pass_bool = False
     self.damage_from = []
     print('N:new player object spawned in at ' + self.room.name)
+    self.guides = []
 
   def hurt(self, doctor, dmg):
     self.damage_from.append(doctor)
@@ -263,6 +264,13 @@ class PlayerObj(Container.Container):
       a = a[6:]
       a = a.strip()
       self.attack(a)
+
+    elif a == 'mission':
+      for i,j in self.guides.items():
+        try:
+          j.orderedevents[j.progress-1][2]()
+        except:
+          pass
 
     elif a == 'wait':
       print(choice(['You take a stance and let the world pass','You raise your hands and stance']) + '...') #TODO Add more messages to this choice
