@@ -35,6 +35,8 @@ container_dict = {
 
   'safe_kitchen'  : Safe.Safe(room_dict['kitchen'],                'safe', '256342'),
   'safe_bedroom'  : Safe.Safe(room_dict['bedroom'],                'bedroom safe', None)
+
+  'zombie_corpse' : Container.Container(room_dict['heaven'],       'zombie (dead)')
 }
 
 exit_dict = {
@@ -95,7 +97,7 @@ def events():
   guides_dict['tutorial'].addEventListener(['room', 'command'],  [ room_dict['kitchen'] , ':inv'],                                          GuideTut.inv_tut)
   guides_dict['tutorial'].addEventListener(['room', 'inv'],      [ room_dict['kitchen'] , item_dict['note']],                               GuideTut.inv_note_tut)
   guides_dict['tutorial'].addEventListener(['room', 'inv'],      [ room_dict['kitchen'] , item_dict['key_conservatory']],                   GuideTut.inv_key_tut)
-  guides_dict['tutorial'].addEventListener(['room', 'unlock_r'], [ room_dict['kitchen'] , exit_dict['kitchen-conservatory']],               GuideTut.unlock_conservatory_tut)
+  guides_dict['tutorial'].addEventListener(['room', 'unlock_r'], [ room_dict['kitchen'] , 'kitchen-conservatory'],                          GuideTut.unlock_conservatory_tut)
   guides_dict['tutorial'].addEventListener(['room', 'unlock_s'], [ room_dict['kitchen'] , container_dict['safe_kitchen']],                  GuideTut.unlock_safe_tut)
 
 def resetEvents():

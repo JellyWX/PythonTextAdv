@@ -3,6 +3,7 @@ import os
 
 from PlayerObj import PlayerObj
 from npcs import NonePlayerObj
+from npcs import Guide
 from guides import GuideTut
 
 from dictionaries import *
@@ -11,7 +12,32 @@ NonePlayerObj.NonePlayerObj.global_access_rooms['heaven'] = room_dict['heaven']
 NonePlayerObj.NonePlayerObj.global_access_variables['npcs_dict'] = npcs_dict
 NonePlayerObj.NonePlayerObj.global_access_variables['container_dict'] = container_dict
 
+Guide.Guide.global_access_variables['exit_dict'] = exit_dict
+
 events()
+
+def SaveGame(a):
+  dmp = pickle.Pickler(f,2).dump
+  for i,j in room_dict.items():
+    with open('saves/' + a + '/room_dict/' + i,'wb') as f:
+      dmp([j.id,j.contents])
+  for i,j in container_dict.items():
+    with open('saves/' + a + '/container_dict/' + i,'wb') as f:
+      dmp([j.id,j.room,j.contents,j.locked,j.name])
+  for i,j in exit_dict.items():
+    with open('saves/' + a + '/exit_dict/' + i,'wb') as f:
+      dmp([j.id,j.locked2])
+  for i,j in item_dict.items():
+    with open('saves/' + a + '/item_dict/' + i,'wb') as f:
+      dmp([j.id,j.container,j.name])
+  for i,j in guides_dict.items():
+    with open('saves/' + a + '/guides_dict/' + i,'wb') as f:
+      dmp([j.detection,j.trigger,j.action,j.progress])
+  for i,j in npcs_dict.items():
+    with open('saves/' + a + '/guides_dict/' + i,'wb') as f:
+      dmp([])
+
+
 
 print('\n\n\nTo save your game at any point, type in `save` followed by a space and a file name.\nTo load a save, type in `load` and the file name.\nType in `load` with no file name to view all available saves.\n')
 
@@ -100,8 +126,6 @@ while player.playing == True:
         print(' - ' + str(x))
 
     action = input(' > ')
-    print(guides_dict['tutorial'].trigger)
-    print(player.room.exits)
 
   refreshGuides(action)
   refreshNpcs()

@@ -19,7 +19,7 @@ class Zombie(NonePlayerObj.NonePlayerObj):
         if choice([True,False]): self.moveRoom(choice(self.room.exits))
 
   def predeath(self):
-    self.global_access_variables['container_dict'][str(uuid.uuid4())] = Container.Container(self.room,self.name + ' (dead)')
+    self.global_access_variables['container_dict']['zombie_corpse'].room = self.room
 
   def postdeath(self):
-    print('The zombie falls quickly to the ground')
+    print('The zombie falls swiftly to the ground')

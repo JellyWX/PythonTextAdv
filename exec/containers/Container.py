@@ -13,7 +13,7 @@ class Container(object):
     print('N:created container ' + self.name + ' with no contents at ' + self.room.name)
     self.room.addContent(self)
     self.postinit(posni)
-    
+
   def postinit(self,n):
     pass
 
@@ -24,12 +24,9 @@ class Container(object):
     self.contents.remove(c)
 
   def search(self, client):
-    if client.room == self.room:
-      print('Container contents:')
-      for x in self.contents:
-        print(' - ' + x.name + ' ')
-    else:
-      print('Container not available')
+    print('Container contents:')
+    for x in self.contents:
+      print(' - ' + x.name + ' ')
 
   def __eq__(self,com):
     return isinstance(com,type(self)) and com.id == self.id

@@ -9,8 +9,6 @@ class Room(Container.Container):
     self.name = n
     self.exits = []
     self.contents = []
-    self.chars = []
-    self.locked = []
     self.room = self
     print('N:spawned in a room. name:' + self.name + ', exits:' + str(self.exits))
 
