@@ -1,15 +1,15 @@
 import uuid
 
 class Container(object):
-  def __init__(self, r, n, posni=None):
+  def __init__(self, r, n, posni=None, c=[],locked=False,desc='No description is available',carry=False):
     self.id = uuid.uuid4()
 
     self.room = r
     self.name = n
-    self.contents = []
-    self.locked = False
-    self.desc = 'No description available'
-    self.carriable = False
+    self.contents = c
+    self.locked = locked
+    self.desc = desc
+    self.carriable = carry
     print('N:created container ' + self.name + ' with no contents at ' + self.room.name)
     self.room.addContent(self)
     self.postinit(posni)

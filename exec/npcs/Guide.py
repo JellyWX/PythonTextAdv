@@ -3,6 +3,7 @@ from containers import Room
 
 class Guide(object):
   ## The guide is designed to lead the player through the game and create a storyline ##
+  global_access_variables = {}
 
   def __init__(self, n, p):
     self.checks = [False]

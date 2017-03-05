@@ -42,10 +42,16 @@ class PlayerObj(Container.Container):
                 print('Room unlocked.')
                 self.pass_bool = True
                 break
+              else:
+                print(y.unlocks.name)
+                print('DEBUG:Key doesn\'t unlock door')
+          else:
+            print('Error:No key in inventory')
           break
         else:
           print('Error:Room not locked.')
     else:
+      print('DEBUG:Room not found. Searching containers...')
       for x in self.room.contents:
         if x.name == a:
           if isinstance(x,Safe.Safe):
@@ -122,7 +128,7 @@ class PlayerObj(Container.Container):
 
   def attack(self, target):
     for i in self.room.contents:
-      if isinstance(i,NonePlayerObj.NonePlayerObj) and i.name == target:
+      if isinstance(i,NonePlayerObj.NonePlayerObj) and i.name == target and not i.dead:
         try:
           i.hurt(self,self.weapon[0].dmg*self.weapon[1])
         except:

@@ -34,7 +34,7 @@ def SaveGame(a):
     with open('saves/' + a + '/guides_dict/' + i,'wb') as f:
       dmp([j.detection,j.trigger,j.action,j.progress])
   for i,j in npcs_dict.items():
-    with open('saves/' + a + '/guides_dict/' + i,'wb') as f:
+    with open('saves/' + a + '/npcs_dict/' + i,'wb') as f:
       dmp([])
 
 
@@ -60,7 +60,7 @@ def refreshPlayer():
 
 refreshGuides(None)
 
-while player.playing == True:
+while player.playing:
   action = input(' > ')
   while not player.doAction(action):
     print('Since that was a light action, nothing moved')

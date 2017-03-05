@@ -36,7 +36,7 @@ container_dict = {
   'safe_kitchen'  : Safe.Safe(room_dict['kitchen'],                'safe', '256342'),
   'safe_bedroom'  : Safe.Safe(room_dict['bedroom'],                'bedroom safe', None)
 
-  'zombie_corpse' : Container.Container(room_dict['heaven'],       'zombie (dead)')
+  #'zombie_corpse' : Container.Container(room_dict['heaven'],       'zombie (dead)')
 }
 
 exit_dict = {
